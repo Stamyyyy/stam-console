@@ -82,6 +82,12 @@
     font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     line-height: 1.6;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .contact-grid, .contact-grid * {
+    -webkit-user-select: text;
+    user-select: text;
   }
 
   h1, h2, h3 { text-wrap: balance; margin: 0; }
@@ -1759,6 +1765,16 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.__stamAudio = { level: 0, active: false };
+
+  /* block copy/cut/right-click everywhere except the contact section (email/discord/github values) */
+  function outsideContact(e) {
+    return !e.target.closest(".contact-grid");
+  }
+  ["copy", "cut", "contextmenu"].forEach(function (evt) {
+    document.addEventListener(evt, function (e) {
+      if (outsideContact(e)) e.preventDefault();
+    });
+  });
 
   /* project demo videos: only decode/play once a card is actually on screen, pause again once it scrolls off */
   var projectVideos = document.querySelectorAll(".project-video");

@@ -1398,7 +1398,7 @@
       <button class="filter-btn" data-filter="electron" type="button">Electron</button>
     </div>
     <div class="projects stagger">
-      <div class="project-card" data-category="web">
+      <div class="project-card" data-category="web" tabindex="0" role="button" aria-label="Divisional Records Database card — press Enter for a fact">
         <div class="project-content">
           <div class="project-top">
             <div>
@@ -1442,7 +1442,7 @@
         </div>
       </div>
 
-      <div class="project-card" data-category="web bot">
+      <div class="project-card" data-category="web bot" tabindex="0" role="button" aria-label="Frontline: Shattered Steel card — press Enter for a fact">
         <div class="project-content">
           <div class="project-top">
             <span class="project-title">Frontline: Shattered Steel</span>
@@ -1484,7 +1484,7 @@
         </div>
       </div>
 
-      <div class="project-card" data-category="electron">
+      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="JARVIS Boot Intro card — press Enter for a fact">
         <div class="project-content">
           <div class="project-top">
             <span class="project-title">JARVIS Boot Intro</span>
@@ -2223,11 +2223,18 @@
     });
   })();
 
-  /* project cards flip on click to show a real fact */
+  /* project cards flip on click (or Enter/Space when focused) to show a real fact */
   document.querySelectorAll(".project-card").forEach(function (card) {
     card.addEventListener("click", function (e) {
       if (e.target.closest("a, button")) return;
       card.classList.toggle("is-flipped");
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.target.closest("a, button")) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        card.classList.toggle("is-flipped");
+      }
     });
   });
 

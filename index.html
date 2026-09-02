@@ -3,6 +3,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+  (function () {
+    try {
+      var stored = localStorage.getItem("stam-console-theme");
+      if (stored === "light" || stored === "dark") {
+        document.documentElement.setAttribute("data-theme", stored);
+      }
+    } catch (e) {}
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stam Console</title>
 <meta name="description" content="Stam — full-stack developer building Discord bots, web apps and databases, and desktop applications. Commissioned client work delivered, open for new projects.">
@@ -191,6 +201,31 @@
     transition: color 0.15s, border-color 0.15s;
   }
   .nav-terms-btn:hover { color: var(--text); border-color: var(--text); }
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .theme-toggle:hover { color: var(--text); border-color: var(--text-dim); background: var(--surface-2); }
+  .theme-icon { display: block; }
+  .theme-icon-sun { display: none; }
+  @media (prefers-color-scheme: light) {
+    html:not([data-theme="dark"]) .theme-icon-sun { display: block; }
+    html:not([data-theme="dark"]) .theme-icon-moon { display: none; }
+  }
+  html[data-theme="light"] .theme-icon-sun { display: block; }
+  html[data-theme="light"] .theme-icon-moon { display: none; }
+  html[data-theme="dark"] .theme-icon-sun { display: none; }
+  html[data-theme="dark"] .theme-icon-moon { display: block; }
   .nav-cta {
     position: relative;
     font-size: 0.85rem;
@@ -580,6 +615,25 @@
 
   /* projects */
   .projects { display: flex; flex-direction: column; gap: 1.25rem; }
+  .projects-collapse {
+    position: relative;
+    max-height: 150px;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .projects-collapse.is-expanded { max-height: 4000px; }
+  .projects-collapse-inner { display: flex; flex-direction: column; gap: 1.25rem; }
+  .projects-fade {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 130px;
+    background: linear-gradient(to bottom, transparent, var(--bg) 88%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .projects-collapse.is-expanded .projects-fade { opacity: 0; }
+  .projects-more-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
+  .projects-more-wrap.is-hidden { display: none; }
   .project-card {
     position: relative;
     width: 94%;
@@ -1263,6 +1317,10 @@
     <li><a href="https://github.com/Stamyyyy" target="_blank" rel="noopener">GitHub</a></li>
     <li><button class="nav-terms-btn" type="button" data-open-terms>Terms</button></li>
   </ul>
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode">
+    <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 1020.354 15.354z" fill="currentColor"/></svg>
+    <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="4.9" y1="4.9" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.1" y2="4.9"/></g></svg>
+  </button>
   <a class="nav-cta" href="mailto:stamsbuisness@gmail.com">Email me</a>
 </nav>
 
@@ -1276,7 +1334,7 @@
         <span class="word">what</span> <span class="word">he</span> <span class="word">starts.</span>
       </h1>
       <p class="type-line mono" id="hero-typed" data-text="&gt; tell me what you need built."><span class="type-cursor" aria-hidden="true"></span></p>
-      <p class="hero-lede reveal-fade" id="hero-lede">I build custom software end to end: desktop apps, Discord bots, and the web apps and databases behind them. I've delivered commissioned work for real clients, and I'm looking for more people like that, people with real ideas who need someone who'll actually finish the build.</p>
+      <p class="hero-lede reveal-fade" id="hero-lede">I build custom software end to end: desktop apps, Discord bots, and the web apps and databases behind them. I've delivered commissioned work for clients, and I'm looking for more people like that, people with ideas who need someone who'll actually finish the build.</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="mailto:stamsbuisness@gmail.com">Email me</a>
         <a class="btn" href="#offer">What I do</a>
@@ -1300,11 +1358,11 @@
     <div class="about-grid">
       <div class="about-copy">
         <p>I'm Stam, based in Europe. I got into this through robotics, wanting to build things that actually did something instead of just sitting on paper. That turned into software: desktop apps, Discord bots, databases, and the websites that tie them together.</p>
-        <p>I didn't come up through a classroom. I learned by building real things and fixing what broke along the way. What I'm actually looking for isn't just any project, it's people who are genuinely good at what they do and whose ideas line up with mine.</p>
+        <p>I didn't come up through a classroom. I learned by building things and fixing what broke along the way. What I'm actually looking for isn't just any project, it's people who are genuinely good at what they do and whose ideas line up with mine.</p>
         <div class="trust-box">
           <p class="trust-lead">Track record</p>
           <ul class="trust-list">
-            <li>Delivered commissioned work for multiple real clients</li>
+            <li>Delivered commissioned work for multiple clients</li>
           </ul>
         </div>
       </div>
@@ -1319,20 +1377,20 @@
   <section id="offer" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">What I can build.</h2>
-      <p class="panel-sub">I've already delivered commissioned work for a real client. I'm looking for more people like that.</p>
+      <p class="panel-sub">I've already delivered commissioned work for a client. I'm looking for more people like that.</p>
     </div>
     <div class="offer-grid stagger">
       <div class="offer-card">
         <div class="offer-title">Discord bots &amp; integrations</div>
-        <p class="offer-desc">Custom bots built for real communities: recruitment and faction systems, staff tools, automation. Built to run day to day, not just demo well.</p>
+        <p class="offer-desc">Custom bots built for communities: recruitment and faction systems, staff tools, automation. Built to run day to day, not just demo well.</p>
       </div>
       <div class="offer-card">
         <div class="offer-title">Web apps &amp; databases</div>
-        <p class="offer-desc">Structured backend tools for organizing real data: records, hierarchies, dashboards, built around how the project actually gets used.</p>
+        <p class="offer-desc">Structured backend tools for organizing data: records, hierarchies, dashboards, built around how the project actually gets used.</p>
       </div>
       <div class="offer-card">
         <div class="offer-title">Desktop applications</div>
-        <p class="offer-desc">Native-feeling desktop apps with real UI polish: custom animation, system tray integration, and a packaged installer, not just a script.</p>
+        <p class="offer-desc">Native-feeling desktop apps with genuine UI polish: custom animation, system tray integration, and a packaged installer, not just a script.</p>
       </div>
       <div class="offer-card">
         <div class="offer-title">Full-stack, start to finish</div>
@@ -1380,7 +1438,7 @@
         <span class="step-num mono">04</span>
         <div>
           <div class="step-title">You test it, I fix what's off</div>
-          <p class="step-desc">You try it for real before it's called finished. If something's not right, I fix it, not argue about it.</p>
+          <p class="step-desc">You try it before it's called finished. If something's not right, I fix it, not argue about it.</p>
         </div>
       </li>
       <li class="step">
@@ -1406,93 +1464,7 @@
       <button class="filter-btn" data-filter="bot" type="button">Discord bot</button>
       <button class="filter-btn" data-filter="electron" type="button">Electron</button>
     </div>
-    <div class="projects stagger">
-      <div class="project-card" data-category="web" tabindex="0" role="button" aria-label="Divisional Records Database card — press Enter for a fact">
-        <div class="project-content">
-          <div class="project-top">
-            <div>
-              <span class="project-title">Divisional Records Database</span>
-              <div class="project-subtitle">Branded &amp; themed as &quot;Imperial Intelligence&quot;</div>
-            </div>
-            <span class="project-status is-live"><span class="live-dot" aria-hidden="true"></span>Live</span>
-          </div>
-          <p class="project-desc">A logistics and records-keeping database, commissioned for a client's community project. The client branded it as a Star Wars themed intelligence archive, but functionally it's a structured platform for personnel data, organizational hierarchy, and access-controlled records.</p>
-          <p class="project-desc">Built to hold up under real, ongoing use, not just look good in a demo, with the data structure designed around how that community actually works day to day.</p>
-          <div class="meta-row">
-            <div>
-              <div class="meta-label">Role</div>
-              <div>Commissioned developer</div>
-            </div>
-            <div>
-              <div class="meta-label">Stack</div>
-              <div>JavaScript, cloud database</div>
-            </div>
-          </div>
-          <div class="tag-row">
-            <span class="tag">JavaScript</span>
-            <span class="tag">Data modeling</span>
-            <span class="tag">Access control</span>
-          </div>
-          <div class="project-footer">
-            <a class="btn btn-small" href="https://imperial-intelligence.web.app/" target="_blank" rel="noopener">Visit site</a>
-          </div>
-        </div>
-        <div class="project-media pattern-a" id="media-imperial">
-          <video class="project-video" id="video-imperial" muted loop playsinline preload="metadata" poster="videos/imperial-poster.jpg">
-            <source src="videos/imperial.mp4" type="video/mp4">
-          </video>
-        </div>
-        <span class="flip-hint">Click for a fact</span>
-        <div class="card-back">
-          <div>
-            <div class="card-back-label">Fun fact</div>
-            <p>It manages records for a community of about 2,000 people without ever going down.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-category="web bot" tabindex="0" role="button" aria-label="Frontline: Shattered Steel card — press Enter for a fact">
-        <div class="project-content">
-          <div class="project-top">
-            <span class="project-title">Frontline: Shattered Steel</span>
-            <span class="project-status is-live"><span class="live-dot" aria-hidden="true"></span>Live</span>
-          </div>
-          <p class="project-desc">A Discord bot and companion website for a Roblox WWII tactical warfare community. This is my own project, not a client job. A friend and I are building the wider game and community together, and I built the bot and the site myself.</p>
-          <p class="project-desc">The bot and site handle faction tracking, recruitment, staff tools, and campaign updates for the community we're building around the game.</p>
-          <div class="meta-row">
-            <div>
-              <div class="meta-label">Role</div>
-              <div>Solo developer</div>
-            </div>
-            <div>
-              <div class="meta-label">Stack</div>
-              <div>Discord bot, JavaScript, cloud database</div>
-            </div>
-          </div>
-          <div class="tag-row">
-            <span class="tag">Discord bot</span>
-            <span class="tag">JavaScript</span>
-            <span class="tag">Community tooling</span>
-          </div>
-          <div class="project-footer">
-            <a class="btn btn-small" href="https://frontline-shattered-steel.web.app/" target="_blank" rel="noopener">Visit site</a>
-            <a class="btn btn-small" href="https://github.com/Stamyyyy/frontline-shattered-steel" target="_blank" rel="noopener">View code</a>
-          </div>
-        </div>
-        <div class="project-media pattern-b" id="media-frontline">
-          <video class="project-video" id="video-frontline" muted loop playsinline preload="metadata" poster="videos/frontline-poster.jpg">
-            <source src="videos/frontline.mp4" type="video/mp4">
-          </video>
-        </div>
-        <span class="flip-hint">Click for a fact</span>
-        <div class="card-back">
-          <div>
-            <div class="card-back-label">Fun fact</div>
-            <p>The bot and the game are built by two different people, but I wrote 100% of the code myself.</p>
-          </div>
-        </div>
-      </div>
-
+    <div class="projects stagger" id="projects-grid">
       <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="JARVIS Boot Intro card — press Enter for a fact">
         <div class="project-content">
           <div class="project-top">
@@ -1543,8 +1515,8 @@
             </div>
             <span class="project-status">Desktop app</span>
           </div>
-          <p class="project-desc">A transparent, tabbed Windows workspace that fuses Notepad, a Command Prompt, and a real WSL Ubuntu terminal into one see-through window. Pick a tile from the launcher and it opens as its own tab, so notes and terminals sit side by side instead of in separate apps.</p>
-          <p class="project-desc">Real cmd.exe and wsl.exe processes run through node-pty and render with xterm.js, notes autosave on a timer, and a global hotkey summons the window from anywhere, the same convention VS Code uses for its terminal.</p>
+          <p class="project-desc">A transparent, tabbed Windows workspace that fuses Notepad, a Command Prompt, and a WSL Ubuntu terminal into one see-through window. Pick a tile from the launcher and it opens as its own tab, so notes and terminals sit side by side instead of in separate apps.</p>
+          <p class="project-desc">Actual cmd.exe and wsl.exe processes run through node-pty and render with xterm.js, notes autosave on a timer, and a global hotkey summons the window from anywhere, the same convention VS Code uses for its terminal.</p>
           <div class="meta-row">
             <div>
               <div class="meta-label">Role</div>
@@ -1577,6 +1549,100 @@
           </div>
         </div>
       </div>
+
+      <div class="projects-collapse" id="projects-collapse">
+        <div class="projects-collapse-inner">
+          <div class="project-card" data-category="web" tabindex="0" role="button" aria-label="Divisional Records Database card — press Enter for a fact">
+            <div class="project-content">
+              <div class="project-top">
+                <div>
+                  <span class="project-title">Divisional Records Database</span>
+                  <div class="project-subtitle">Branded &amp; themed as &quot;Imperial Intelligence&quot;</div>
+                </div>
+                <span class="project-status is-live"><span class="live-dot" aria-hidden="true"></span>Live</span>
+              </div>
+              <p class="project-desc">A logistics and records-keeping database, commissioned for a client's community project. The client branded it as a Star Wars themed intelligence archive, but functionally it's a structured platform for personnel data, organizational hierarchy, and access-controlled records.</p>
+              <p class="project-desc">Built to hold up under ongoing use, not just look good in a demo, with the data structure designed around how that community actually works day to day.</p>
+              <div class="meta-row">
+                <div>
+                  <div class="meta-label">Role</div>
+                  <div>Commissioned developer</div>
+                </div>
+                <div>
+                  <div class="meta-label">Stack</div>
+                  <div>JavaScript, cloud database</div>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">JavaScript</span>
+                <span class="tag">Data modeling</span>
+                <span class="tag">Access control</span>
+              </div>
+              <div class="project-footer">
+                <a class="btn btn-small" href="https://imperial-intelligence.web.app/" target="_blank" rel="noopener">Visit site</a>
+              </div>
+            </div>
+            <div class="project-media pattern-a" id="media-imperial">
+              <video class="project-video" id="video-imperial" muted loop playsinline preload="metadata" poster="videos/imperial-poster.jpg">
+                <source src="videos/imperial.mp4" type="video/mp4">
+              </video>
+            </div>
+            <span class="flip-hint">Click for a fact</span>
+            <div class="card-back">
+              <div>
+                <div class="card-back-label">Fun fact</div>
+                <p>It manages records for a community of about 2,000 people without ever going down.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card" data-category="web bot" tabindex="0" role="button" aria-label="Frontline: Shattered Steel card — press Enter for a fact">
+            <div class="project-content">
+              <div class="project-top">
+                <span class="project-title">Frontline: Shattered Steel</span>
+                <span class="project-status is-live"><span class="live-dot" aria-hidden="true"></span>Live</span>
+              </div>
+              <p class="project-desc">A Discord bot and companion website for a Roblox WWII tactical warfare community. This is my own project, not a client job. A friend and I are building the wider game and community together, and I built the bot and the site myself.</p>
+              <p class="project-desc">The bot and site handle faction tracking, recruitment, staff tools, and campaign updates for the community we're building around the game.</p>
+              <div class="meta-row">
+                <div>
+                  <div class="meta-label">Role</div>
+                  <div>Solo developer</div>
+                </div>
+                <div>
+                  <div class="meta-label">Stack</div>
+                  <div>Discord bot, JavaScript, cloud database</div>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">Discord bot</span>
+                <span class="tag">JavaScript</span>
+                <span class="tag">Community tooling</span>
+              </div>
+              <div class="project-footer">
+                <a class="btn btn-small" href="https://frontline-shattered-steel.web.app/" target="_blank" rel="noopener">Visit site</a>
+                <a class="btn btn-small" href="https://github.com/Stamyyyy/frontline-shattered-steel" target="_blank" rel="noopener">View code</a>
+              </div>
+            </div>
+            <div class="project-media pattern-b" id="media-frontline">
+              <video class="project-video" id="video-frontline" muted loop playsinline preload="metadata" poster="videos/frontline-poster.jpg">
+                <source src="videos/frontline.mp4" type="video/mp4">
+              </video>
+            </div>
+            <span class="flip-hint">Click for a fact</span>
+            <div class="card-back">
+              <div>
+                <div class="card-back-label">Fun fact</div>
+                <p>The bot and the game are built by two different people, but I wrote 100% of the code myself.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="projects-fade" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="projects-more-wrap">
+      <button class="btn btn-small projects-more-btn" id="projects-more-btn" type="button" aria-expanded="false" aria-controls="projects-collapse">Show more</button>
     </div>
   </section>
 
@@ -1625,7 +1691,7 @@
       <p class="panel-sub">Reviews from people I've actually worked with. Nothing here is made up, so it's short for now.</p>
     </div>
     <div class="reviews-empty">
-      <p>I'm still collecting real feedback from clients and collaborators. If you've worked with me on Imperial Intelligence, Frontline, or anything else, I'd genuinely appreciate a few lines about what that was like.</p>
+      <p>I'm still collecting feedback from clients and collaborators. If you've worked with me on Imperial Intelligence, Frontline, or anything else, I'd genuinely appreciate a few lines about what that was like.</p>
       <a class="btn btn-small" href="mailto:stamsbuisness@gmail.com?subject=A%20quick%20review&body=Hey%20Stam%2C%20here%27s%20what%20it%20was%20like%20working%20with%20you%3A%20">Leave a review</a>
     </div>
   </section>
@@ -1645,7 +1711,7 @@
       </details>
       <details class="faq-item">
         <summary>How old are you?</summary>
-        <p class="faq-answer">15. I've delivered commissioned work for real clients.</p>
+        <p class="faq-answer">15. I've delivered commissioned work for clients.</p>
       </details>
       <details class="faq-item">
         <summary>What if I'm not sure exactly what I need?</summary>
@@ -1687,7 +1753,7 @@
     </div>
     <div class="footer-right">
       <button class="footer-terms-btn" type="button" data-open-terms>Terms</button>
-      <span class="footer-tagline">Building real things.</span>
+      <span class="footer-tagline">Building things that ship.</span>
     </div>
   </div>
   <div class="signature">
@@ -1961,6 +2027,55 @@
     });
   }
 
+  /* theme toggle */
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("theme-toggle");
+    var STORAGE_KEY = "stam-console-theme";
+    var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+
+    function systemTheme() {
+      return mql && mql.matches ? "light" : "dark";
+    }
+    function effectiveTheme() {
+      var explicit = root.getAttribute("data-theme");
+      return explicit === "light" || explicit === "dark" ? explicit : systemTheme();
+    }
+    function updateLabel(theme) {
+      if (!btn) return;
+      btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    }
+
+    updateLabel(effectiveTheme());
+
+    if (mql && mql.addEventListener) {
+      mql.addEventListener("change", function () {
+        if (!root.getAttribute("data-theme")) updateLabel(effectiveTheme());
+      });
+    }
+
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var next = effectiveTheme() === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        updateLabel(next);
+        try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+      });
+    }
+  })();
+
+  /* show more projects */
+  var moreBtn = document.getElementById("projects-more-btn");
+  var projectsCollapse = document.getElementById("projects-collapse");
+  var moreWrap = moreBtn ? moreBtn.closest(".projects-more-wrap") : null;
+  function expandProjects() {
+    if (!projectsCollapse || projectsCollapse.classList.contains("is-expanded")) return;
+    projectsCollapse.classList.add("is-expanded");
+    if (moreBtn) moreBtn.setAttribute("aria-expanded", "true");
+    if (moreWrap) moreWrap.classList.add("is-hidden");
+  }
+  if (moreBtn) moreBtn.addEventListener("click", expandProjects);
+
   /* project filters */
   var filterBtns = document.querySelectorAll(".filter-btn");
   var cards = document.querySelectorAll(".project-card");
@@ -1969,6 +2084,7 @@
       filterBtns.forEach(function (b) { b.classList.remove("is-active"); });
       btn.classList.add("is-active");
       var filter = btn.getAttribute("data-filter");
+      if (filter !== "all") expandProjects();
       cards.forEach(function (card) {
         var cats = (card.getAttribute("data-category") || "").split(" ");
         var show = filter === "all" || cats.indexOf(filter) !== -1;

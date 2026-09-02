@@ -698,6 +698,70 @@
   .project-media.pattern-a::before { background-image: repeating-linear-gradient(135deg, rgba(var(--text-rgb), 0.06) 0 1px, transparent 1px 22px); }
   .project-media.pattern-b::before { background-image: radial-gradient(rgba(var(--text-rgb), 0.12) 1px, transparent 1px); background-size: 18px 18px; }
   .project-media.pattern-c::before { background-image: repeating-linear-gradient(45deg, rgba(var(--text-rgb), 0.06) 0 1px, transparent 1px 22px); }
+  .video-expand-btn {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(10, 10, 12, 0.6);
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.88;
+    transition: opacity 0.2s, transform 0.2s, background 0.2s;
+  }
+  .video-expand-btn:hover,
+  .video-expand-btn:focus-visible { opacity: 1; background: rgba(10, 10, 12, 0.8); transform: scale(1.06); }
+  .video-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4vh 4vw;
+    background: rgba(0, 0, 0, 0.92);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+  }
+  .video-lightbox.is-open { opacity: 1; visibility: visible; }
+  .video-lightbox-video {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    background: #000;
+    outline: none;
+  }
+  .video-lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .video-lightbox-close:hover,
+  .video-lightbox-close:focus-visible { background: rgba(255, 255, 255, 0.18); }
+  body.lightbox-open { overflow: hidden; }
   .project-mark {
     position: relative;
     font-weight: 800;
@@ -1276,6 +1340,7 @@
     .about-grid { grid-template-columns: 1fr; }
     .project-card { grid-template-columns: 1fr; width: 100%; margin: 0; }
     .project-media { border-left: none; border-top: 1px solid var(--border); min-height: 180px; }
+    .video-expand-btn { width: 42px; height: 42px; }
     .nav-links { display: none; }
     .sound-label { display: none; }
     .kbd-hint { display: none; }
@@ -1291,6 +1356,7 @@
     #loader { display: none; }
     .btn-primary, .nav-cta { animation: none; background-position: 0 0, 40% 0; }
     .card-back { transition: none; }
+    .video-lightbox { transition: none; }
   }
 </style>
 </head>
@@ -2506,6 +2572,79 @@
       }
     });
   });
+
+  /* project card videos are cropped (object-fit: cover) to fit the card, so give each one a way
+     to open the full, uncropped clip in a lightbox with native controls (incl. the browser's own
+     fullscreen button, which works everywhere, unlike PiP). Built as a <button> so the existing
+     card-flip handler above ignores it (it already skips clicks on "a, button"). */
+  (function () {
+    var mediaBlocks = document.querySelectorAll(".project-media");
+    if (!mediaBlocks.length) return;
+
+    var lightbox = document.createElement("div");
+    lightbox.className = "video-lightbox";
+    lightbox.setAttribute("role", "dialog");
+    lightbox.setAttribute("aria-modal", "true");
+    lightbox.setAttribute("aria-label", "Full video");
+    lightbox.innerHTML =
+      '<button type="button" class="video-lightbox-close" aria-label="Close video">&times;</button>' +
+      '<video class="video-lightbox-video" controls playsinline></video>';
+    document.body.appendChild(lightbox);
+
+    var lightboxVideo = lightbox.querySelector(".video-lightbox-video");
+    var closeBtn = lightbox.querySelector(".video-lightbox-close");
+    var lastTrigger = null;
+
+    function openLightbox(sourceVideo, trigger) {
+      var source = sourceVideo.querySelector("source");
+      if (!source) return;
+      lastTrigger = trigger;
+      lightboxVideo.poster = sourceVideo.getAttribute("poster") || "";
+      lightboxVideo.src = source.src;
+      sourceVideo.pause();
+      lightbox.classList.add("is-open");
+      document.body.classList.add("lightbox-open");
+      lightboxVideo.currentTime = 0;
+      lightboxVideo.play().catch(function () {});
+      closeBtn.focus();
+    }
+
+    function closeLightbox() {
+      if (!lightbox.classList.contains("is-open")) return;
+      lightbox.classList.remove("is-open");
+      document.body.classList.remove("lightbox-open");
+      lightboxVideo.pause();
+      lightboxVideo.removeAttribute("src");
+      lightboxVideo.load();
+      if (lastTrigger) lastTrigger.focus();
+    }
+
+    mediaBlocks.forEach(function (media) {
+      var video = media.querySelector(".project-video");
+      if (!video) return;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "video-expand-btn";
+      btn.setAttribute("aria-label", "View full video");
+      btn.innerHTML =
+        '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">' +
+        '<path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+        "</svg>";
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        openLightbox(video, btn);
+      });
+      media.appendChild(btn);
+    });
+
+    closeBtn.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", function (e) {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeLightbox();
+    });
+  })();
 
   /* full-screen message flash, reuses the boot loader overlay */
   function replayBoot(message) {

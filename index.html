@@ -2121,83 +2121,128 @@
     });
   }
 
-  /* hero dot grid, reacts to the cursor */
+  /* hero particle network: drifting nodes that link when close, reacting to the cursor and to sound */
   (function () {
     var canvas = document.getElementById("hero-grid");
     if (!canvas) return;
     var ctx = canvas.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var spacing = 34;
     var mouse = { x: -9999, y: -9999 };
-    var dots = [];
+    var particles = [];
     var raf = null;
+    var visible = true;
+    var W = 0, H = 0;
+    var linkDist = 140;
 
-    function accentDim() {
-      return getComputedStyle(document.documentElement).getPropertyValue("--text-faint").trim();
+    function textRgb() {
+      return getComputedStyle(document.documentElement).getPropertyValue("--text-rgb").trim();
     }
-    function accentBright() {
-      return getComputedStyle(document.documentElement).getPropertyValue("--text").trim();
+
+    function seed() {
+      var area = (W * H) / (dpr * dpr);
+      var count = Math.max(28, Math.min(120, Math.round(area / 9000)));
+      particles = [];
+      for (var i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.2 * dpr,
+          vy: (Math.random() - 0.5) * 0.2 * dpr,
+          r: (0.9 + Math.random() * 1.3) * dpr
+        });
+      }
     }
 
     function resize() {
       var rect = canvas.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      dots = [];
-      var cols = Math.ceil(canvas.width / (spacing * dpr)) + 1;
-      var rows = Math.ceil(canvas.height / (spacing * dpr)) + 1;
-      for (var r = 0; r < rows; r++) {
-        for (var c = 0; c < cols; c++) {
-          dots.push({ x: c * spacing * dpr, y: r * spacing * dpr });
+      W = canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      H = canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      seed();
+    }
+
+    function step() {
+      var rgb = textRgb();
+      var audioBoost = (window.__stamAudio && window.__stamAudio.level) || 0;
+      var mx = mouse.x * dpr, my = mouse.y * dpr;
+
+      ctx.clearRect(0, 0, W, H);
+
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x += W; if (p.x > W) p.x -= W;
+        if (p.y < 0) p.y += H; if (p.y > H) p.y -= H;
+      }
+
+      var linkDistPx = linkDist * dpr;
+      for (var a = 0; a < particles.length; a++) {
+        for (var b = a + 1; b < particles.length; b++) {
+          var pa = particles[a], pb = particles[b];
+          var dx = pa.x - pb.x, dy = pa.y - pb.y;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if (d < linkDistPx) {
+            var alpha = (1 - d / linkDistPx) * (0.16 + audioBoost * 0.1);
+            ctx.strokeStyle = "rgba(" + rgb + "," + alpha.toFixed(3) + ")";
+            ctx.lineWidth = dpr;
+            ctx.beginPath();
+            ctx.moveTo(pa.x, pa.y);
+            ctx.lineTo(pb.x, pb.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      var cursorRadius2 = 26000 * dpr * dpr;
+      for (var j = 0; j < particles.length; j++) {
+        var p2 = particles[j];
+        var cdx = p2.x - mx, cdy = p2.y - my;
+        var near = Math.max(0, 1 - (cdx * cdx + cdy * cdy) / cursorRadius2);
+        var size = p2.r * (1 + near * 1.4 + audioBoost * 0.9);
+        var alpha = Math.min(1, 0.3 + near * 0.5 + audioBoost * 0.15);
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(" + rgb + "," + alpha.toFixed(3) + ")";
+        ctx.arc(p2.x, p2.y, size, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (near > 0.03) {
+          ctx.strokeStyle = "rgba(" + rgb + "," + (near * 0.3).toFixed(3) + ")";
+          ctx.lineWidth = dpr;
+          ctx.beginPath();
+          ctx.moveTo(p2.x, p2.y);
+          ctx.lineTo(mx, my);
+          ctx.stroke();
         }
       }
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      var dim = accentDim();
-      var bright = accentBright();
-      var radius = 2200 * dpr * dpr;
-      var audioBoost = (window.__stamAudio && window.__stamAudio.level) || 0;
-      for (var i = 0; i < dots.length; i++) {
-        var d = dots[i];
-        var dx = d.x - mouse.x * dpr;
-        var dy = d.y - mouse.y * dpr;
-        var dist2 = dx * dx + dy * dy;
-        var t = Math.max(0, 1 - dist2 / radius);
-        var size = (1 + t * 1.6 + audioBoost * 1.3) * dpr;
-        ctx.beginPath();
-        ctx.fillStyle = t > 0.04 ? bright : dim;
-        ctx.globalAlpha = (t > 0.04 ? 0.25 + t * 0.5 : 0.35) + audioBoost * 0.12;
-        ctx.arc(d.x, d.y, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
+    function loop() {
+      if (!visible) { raf = null; return; }
+      step();
+      raf = requestAnimationFrame(loop);
     }
 
     resize();
-    draw();
+    step();
 
     if (!reduceMotion) {
+      loop();
       canvas.addEventListener("pointermove", function (e) {
         var rect = canvas.getBoundingClientRect();
         mouse.x = e.clientX - rect.left;
         mouse.y = e.clientY - rect.top;
-        if (!raf) raf = requestAnimationFrame(function () { draw(); raf = null; });
       });
       canvas.addEventListener("pointerleave", function () {
         mouse.x = -9999; mouse.y = -9999;
-        draw();
       });
-      var ro = new ResizeObserver(function () { resize(); draw(); });
+      var ro = new ResizeObserver(function () { resize(); });
       ro.observe(canvas);
-      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
-
-      /* redraw continuously while sound is playing, so the grid reacts to it */
-      (function audioLoop() {
-        if (window.__stamAudio && window.__stamAudio.active) draw();
-        requestAnimationFrame(audioLoop);
-      })();
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          visible = entries[0].isIntersecting;
+          if (visible && !raf) loop();
+        }, { threshold: 0 });
+        io.observe(canvas);
+      }
     }
   })();
 

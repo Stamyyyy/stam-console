@@ -1455,8 +1455,8 @@
   <section id="work" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">Some of what that's looked like.</h2>
-      <p class="panel-sub">All coded solo. One was commissioned, three are mine.</p>
-      <p class="changelog-line">Last shipped: Wraith, a transparent Notepad + terminal workspace, Sep 2026.</p>
+      <p class="panel-sub">All coded solo. One was commissioned, four are mine.</p>
+      <p class="changelog-line">Last shipped: Specter, a transparent Task Manager replacement, Sep 2026.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter work by type">
       <button class="filter-btn is-active" data-filter="all" type="button">All</button>
@@ -1546,6 +1546,49 @@
           <div>
             <div class="card-back-label">Fun fact</div>
             <p>Its file search is a plain JS file walk, not a shell-out to findstr or grep, so there's no command-injection surface hiding in the search box.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Specter card — press Enter for a fact">
+        <div class="project-content">
+          <div class="project-top">
+            <div>
+              <span class="project-title">Specter</span>
+              <div class="project-subtitle">Transparent Task Manager replacement</div>
+            </div>
+            <span class="project-status">Desktop app</span>
+          </div>
+          <p class="project-desc">A transparent, fully customizable Task Manager replacement for Windows — Processes, Performance, Startup, and Services in one themed HUD, with live CPU/memory/network graphs, process priority and CPU-affinity control, and a floating always-on-top mini widget.</p>
+          <p class="project-desc">Live stats come from a single persistent PowerShell worker streaming JSON over stdout, not a fresh process spawned every tick, computing CPU% from Get-Process time deltas, the same math Task Manager itself uses, so it kept working even after a broken performance-counter provider on my own machine ruled out the more obvious approach.</p>
+          <div class="meta-row">
+            <div>
+              <div class="meta-label">Role</div>
+              <div>Solo developer</div>
+            </div>
+            <div>
+              <div class="meta-label">Stack</div>
+              <div>Electron, PowerShell, WMI</div>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Electron</span>
+            <span class="tag">PowerShell</span>
+          </div>
+          <div class="project-footer">
+            <a class="btn btn-small" href="https://github.com/Stamyyyy/specter" target="_blank" rel="noopener">View code</a>
+          </div>
+        </div>
+        <div class="project-media pattern-b" id="media-specter">
+          <span class="project-mark">S</span>
+          <span class="project-mark-tag">Specter</span>
+        </div>
+        <span class="flip-hint">Click for a fact</span>
+        <div class="card-back">
+          <div>
+            <div class="card-back-label">Fun fact</div>
+            <p>Every process's executable gets checked live with Get-AuthenticodeSignature, so unsigned binaries get flagged with a warning badge, something stock Task Manager doesn't surface at all without a third-party tool.</p>
           </div>
         </div>
       </div>

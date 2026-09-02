@@ -635,6 +635,10 @@
     object-fit: cover;
     display: block;
   }
+  .project-media img.fit-contain,
+  .project-video.fit-contain {
+    object-fit: contain;
+  }
   .project-media::before {
     content: "";
     position: absolute;
@@ -1565,7 +1569,7 @@
           </div>
         </div>
         <div class="project-media pattern-a" id="media-wraith">
-          <video class="project-video" id="video-wraith" muted loop playsinline preload="metadata" poster="videos/wraith-poster.jpg">
+          <video class="project-video fit-contain" id="video-wraith" muted loop playsinline preload="metadata" poster="videos/wraith-poster.jpg">
             <source src="videos/wraith.mp4" type="video/mp4">
           </video>
         </div>

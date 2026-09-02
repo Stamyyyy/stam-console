@@ -1396,8 +1396,8 @@
   <section id="work" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">Some of what that's looked like.</h2>
-      <p class="panel-sub">All coded solo. One was commissioned, two are mine.</p>
-      <p class="changelog-line">Last shipped: faction tracking added to Frontline: Shattered Steel, Aug 2026.</p>
+      <p class="panel-sub">All coded solo. One was commissioned, three are mine.</p>
+      <p class="changelog-line">Last shipped: Wraith, a transparent Notepad + terminal workspace, Sep 2026.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter work by type">
       <button class="filter-btn is-active" data-filter="all" type="button">All</button>
@@ -1529,6 +1529,49 @@
           <div>
             <div class="card-back-label">Fun fact</div>
             <p>The startup sound isn't a file, it's generated live with the Web Audio API. Same tech behind the sound toggle on this page.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Wraith card — press Enter for a fact">
+        <div class="project-content">
+          <div class="project-top">
+            <div>
+              <span class="project-title">Wraith</span>
+              <div class="project-subtitle">Transparent Notepad + terminal workspace</div>
+            </div>
+            <span class="project-status">Desktop app</span>
+          </div>
+          <p class="project-desc">A transparent, tabbed Windows workspace that fuses Notepad, a Command Prompt, and a real WSL Ubuntu terminal into one see-through window. Pick a tile from the launcher and it opens as its own tab, so notes and terminals sit side by side instead of in separate apps.</p>
+          <p class="project-desc">Real cmd.exe and wsl.exe processes run through node-pty and render with xterm.js, notes autosave on a timer, and a global hotkey summons the window from anywhere, the same convention VS Code uses for its terminal.</p>
+          <div class="meta-row">
+            <div>
+              <div class="meta-label">Role</div>
+              <div>Solo developer</div>
+            </div>
+            <div>
+              <div class="meta-label">Stack</div>
+              <div>Electron, node-pty, xterm.js</div>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Electron</span>
+            <span class="tag">Native modules</span>
+          </div>
+          <div class="project-footer">
+            <a class="btn btn-small" href="https://github.com/Stamyyyy/wraith" target="_blank" rel="noopener">View code</a>
+          </div>
+        </div>
+        <div class="project-media pattern-a" id="media-wraith">
+          <span class="project-mark">W</span>
+          <span class="project-mark-tag">Wraith</span>
+        </div>
+        <span class="flip-hint">Click for a fact</span>
+        <div class="card-back">
+          <div>
+            <div class="card-back-label">Fun fact</div>
+            <p>Its file search is a plain JS file walk, not a shell-out to findstr or grep, so there's no command-injection surface hiding in the search box.</p>
           </div>
         </div>
       </div>

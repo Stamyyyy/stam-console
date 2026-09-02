@@ -639,6 +639,14 @@
   .project-video.fit-contain {
     object-fit: contain;
   }
+  .project-media.media-portrait {
+    align-self: start;
+    min-height: 0;
+    aspect-ratio: 1056 / 1120;
+  }
+  @media (max-width: 760px) {
+    .project-media.media-portrait { align-self: stretch; }
+  }
   .project-media::before {
     content: "";
     position: absolute;
@@ -1568,7 +1576,7 @@
             <a class="btn btn-small" href="https://github.com/Stamyyyy/wraith" target="_blank" rel="noopener">View code</a>
           </div>
         </div>
-        <div class="project-media pattern-a" id="media-wraith">
+        <div class="project-media pattern-a media-portrait" id="media-wraith">
           <video class="project-video fit-contain" id="video-wraith" muted loop playsinline preload="metadata" poster="videos/wraith-poster.jpg">
             <source src="videos/wraith.mp4" type="video/mp4">
           </video>

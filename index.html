@@ -1660,6 +1660,50 @@
         </div>
       </div>
 
+      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Séance card — press Enter for a fact">
+        <div class="project-content">
+          <div class="project-top">
+            <div>
+              <span class="project-title">Séance</span>
+              <div class="project-subtitle">Multi-project status dashboard + CLI</div>
+            </div>
+            <span class="project-status">Desktop app</span>
+          </div>
+          <p class="project-desc">A transparent, summonable dashboard for keeping track of several projects at once: live git status, a per-project journal, an encrypted secrets vault, one-click sync between a WSL dev copy and its Windows counterpart, and a background test/build runner that notifies on pass or fail. A matching command-line tool reads and writes the exact same data, so status and notes stay current whether the window is open or not.</p>
+          <p class="project-desc">Because the CLI runs under WSL and the window itself runs as a native Windows process against the same on-disk data, project paths have to be translated between WSL's and Windows's own notations at the point of use, and every write goes through a real cross-process file lock with an atomic rename rather than a naive single-writer assumption, so two terminals touching the same project at once can't silently clobber each other.</p>
+          <div class="meta-row">
+            <div>
+              <div class="meta-label">Role</div>
+              <div>Solo developer</div>
+            </div>
+            <div>
+              <div class="meta-label">Stack</div>
+              <div>Electron, Node.js, AES-256-GCM</div>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Electron</span>
+            <span class="tag">CLI tooling</span>
+          </div>
+          <div class="project-footer">
+            <a class="btn btn-small" href="https://github.com/Stamyyyy/seance" target="_blank" rel="noopener">View code</a>
+          </div>
+        </div>
+        <div class="project-media pattern-c" id="media-seance">
+          <video class="project-video" id="video-seance" muted loop playsinline preload="metadata" poster="videos/seance-poster.jpg">
+            <source src="videos/seance.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span class="flip-hint">Click for a fact</span>
+        <div class="card-back">
+          <div>
+            <div class="card-back-label">Fun fact</div>
+            <p>Its background test runner refuses to double-run the same command from two terminals at once, even across the WSL/Windows boundary, which is trickier than it sounds: a process ID means something different to each side, so it can't just ask "is that pid still alive."</p>
+          </div>
+        </div>
+      </div>
+
       <div class="projects-collapse" id="projects-collapse">
         <div class="projects-collapse-inner">
           <div class="project-card" data-category="web" tabindex="0" role="button" aria-label="Divisional Records Database card — press Enter for a fact">

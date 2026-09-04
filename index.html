@@ -1434,7 +1434,7 @@
       </div>
       <div class="fact-list stagger">
         <div class="fact-row"><span>Based in</span><span class="mono">Europe</span></div>
-        <div class="fact-row"><span>Languages</span><span class="mono">JS, PY, C, C++, HTML</span></div>
+        <div class="fact-row"><span>Languages</span><span class="mono">JS, PY, C, C++, C#, HTML, CSS</span></div>
         <div class="fact-row"><span>Projects shipped</span><span class="mono">3</span></div>
       </div>
     </div>
@@ -1521,8 +1521,8 @@
   <section id="work" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">Some of what that's looked like.</h2>
-      <p class="panel-sub">All coded solo. One was commissioned, four are mine.</p>
-      <p class="changelog-line">Last shipped: Specter, a transparent Task Manager replacement, Sep 2026.</p>
+      <p class="panel-sub">All coded solo. One was commissioned, six are mine.</p>
+      <p class="changelog-line">Last shipped: Revenant, an Explorer replacement with instant whole-drive search, Sep 2026.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter work by type">
       <button class="filter-btn is-active" data-filter="all" type="button">All</button>
@@ -1704,6 +1704,50 @@
         </div>
       </div>
 
+      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Revenant card — press Enter for a fact">
+        <div class="project-content">
+          <div class="project-top">
+            <div>
+              <span class="project-title">Revenant</span>
+              <div class="project-subtitle">Explorer replacement with instant whole-drive search</div>
+            </div>
+            <span class="project-status">Desktop app</span>
+          </div>
+          <p class="project-desc">A stock Windows Explorer replacement: whole-drive file search that returns instantly by reading the NTFS Master File Table directly instead of walking the filesystem, kept live via the USN Journal, plus real directory browsing, a 24h delete/edit recovery safety net, and tags.</p>
+          <p class="project-desc">Node's own fs module misclassifies a raw volume handle as a directory on the Node version Electron currently bundles, so search runs through a small native C++ addon that calls Win32's CreateFile/ReadFile directly instead, bypassing fs entirely, one of several corruption and data-loss edge cases I found and fixed in a dedicated bug-scan pass.</p>
+          <div class="meta-row">
+            <div>
+              <div class="meta-label">Role</div>
+              <div>Solo developer</div>
+            </div>
+            <div>
+              <div class="meta-label">Stack</div>
+              <div>Electron, C++ (N-API), PowerShell</div>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Electron</span>
+            <span class="tag">Native modules</span>
+          </div>
+          <div class="project-footer">
+            <a class="btn btn-small" href="https://github.com/Stamyyyy/revenant" target="_blank" rel="noopener">View code</a>
+          </div>
+        </div>
+        <div class="project-media pattern-b" id="media-revenant">
+          <video class="project-video" id="video-revenant" muted loop playsinline preload="metadata" poster="videos/revenant-poster.jpg">
+            <source src="videos/revenant.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span class="flip-hint">Click for a fact</span>
+        <div class="card-back">
+          <div>
+            <div class="card-back-label">Fun fact</div>
+            <p>Live updates trust the USN Journal the instant an event is seen rather than re-reading the file record, because a raw volume read of a just-deleted file still showed it as in-use 4+ seconds later, while the journal entry was already there.</p>
+          </div>
+        </div>
+      </div>
+
       <div class="projects-collapse" id="projects-collapse">
         <div class="projects-collapse-inner">
           <div class="project-card" data-category="web" tabindex="0" role="button" aria-label="Divisional Records Database card — press Enter for a fact">
@@ -1814,6 +1858,7 @@
           <span class="chip">Python</span>
           <span class="chip">C</span>
           <span class="chip">C++</span>
+          <span class="chip">C#</span>
         </div>
       </div>
       <div class="skill-group">

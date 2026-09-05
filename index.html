@@ -1521,7 +1521,7 @@
   <section id="work" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">Some of what that's looked like.</h2>
-      <p class="panel-sub">All coded solo. One was commissioned, six are mine.</p>
+      <p class="panel-sub">All coded solo. One was commissioned, seven are mine.</p>
       <p class="changelog-line">Last shipped: Revenant, an Explorer replacement with instant whole-drive search, Sep 2026.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter work by type">
@@ -1529,6 +1529,7 @@
       <button class="filter-btn" data-filter="web" type="button">Web app</button>
       <button class="filter-btn" data-filter="bot" type="button">Discord bot</button>
       <button class="filter-btn" data-filter="electron" type="button">Electron</button>
+      <button class="filter-btn" data-filter="luau" type="button">Luau</button>
     </div>
     <div class="projects stagger" id="projects-grid">
       <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="JARVIS Boot Intro card — press Enter for a fact">
@@ -1832,6 +1833,50 @@
               <div>
                 <div class="card-back-label">Fun fact</div>
                 <p>The bot and the game are built by two different people, but I wrote 100% of the code myself.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card" data-category="luau" tabindex="0" role="button" aria-label="Poltergeist card — press Enter for a fact">
+            <div class="project-content">
+              <div class="project-top">
+                <div>
+                  <span class="project-title">Poltergeist</span>
+                  <div class="project-subtitle">Advisory presence/claim plugin for Roblox Team Create</div>
+                </div>
+                <span class="project-status">Studio plugin</span>
+              </div>
+              <p class="project-desc">Studio already shows live collaborator cursors on open scripts in Team Create, but everything else, models, UI, Terrain, whole Workspace subtrees, has no presence indicator at all. Poltergeist claims those: pick something, claim it, and every other collaborator sees it's spoken for before they start editing the same thing.</p>
+              <p class="project-desc">Claims live entirely inside the shared DataModel itself rather than an external service, a Folder with Archivable set false, so it replicates live to every Team Create session but never ships into the published place. A heartbeat keeps a claim alive; 15 seconds of silence marks it abandoned so a crashed collaborator can't lock something forever.</p>
+              <div class="meta-row">
+                <div>
+                  <div class="meta-label">Role</div>
+                  <div>Solo developer</div>
+                </div>
+                <div>
+                  <div class="meta-label">Stack</div>
+                  <div>Luau, Roblox Studio plugin APIs</div>
+                </div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">Luau</span>
+                <span class="tag">Roblox Studio</span>
+                <span class="tag">Team Create</span>
+              </div>
+              <div class="project-footer">
+                <a class="btn btn-small" href="https://github.com/Stamyyyy/poltergeist" target="_blank" rel="noopener">View code</a>
+              </div>
+            </div>
+            <div class="project-media pattern-c" id="media-poltergeist">
+              <video class="project-video" id="video-poltergeist" muted loop playsinline preload="metadata" poster="videos/poltergeist-poster.jpg">
+                <source src="videos/poltergeist.mp4" type="video/mp4">
+              </video>
+            </div>
+            <span class="flip-hint">Click for a fact</span>
+            <div class="card-back">
+              <div>
+                <div class="card-back-label">Fun fact</div>
+                <p>There's no vote when two people claim the same thing at once, whichever write physically lands first in the shared DataModel just keeps it, and the loser finds out and backs off on its very next heartbeat, a few seconds later.</p>
               </div>
             </div>
           </div>

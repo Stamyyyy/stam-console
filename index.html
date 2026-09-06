@@ -26,62 +26,123 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v2.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap">
 <style>
+  @font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("assets/fonts/archivo-400.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("assets/fonts/archivo-500.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("assets/fonts/archivo-700.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Archivo Black";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("assets/fonts/archivo-black-400.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("assets/fonts/jetbrains-mono-400.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("assets/fonts/jetbrains-mono-500.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("assets/fonts/jetbrains-mono-700.woff2") format("woff2");
+  }
+  /*
+    Brutalist archetypes (industrial-brutalist-ui): dark = Tactical Telemetry
+    (CRT terminal), light = Swiss Industrial Print (blueprint/newsprint).
+    The existing theme toggle already ensures only one renders at a time,
+    which is exactly the skill's "pick one substrate, never mix" rule.
+    Hazard red is the one accent shared by both archetypes.
+  */
   :root {
-    --bg: #0a0a0b;
-    --surface: #141416;
-    --surface-2: #1c1c1f;
-    --text: #f4f4f5;
-    --text-rgb: 244, 244, 245;
-    --text-dim: #a0a0a8;
-    --text-faint: #6b6b72;
-    --border: #2a2a2e;
-    --live: #2fd98f;
-    --live-rgb: 47, 217, 143;
+    --bg: #0a0a0a;
+    --surface: #0a0a0a;
+    --surface-2: #141414;
+    --text: #eaeaea;
+    --text-rgb: 234, 234, 234;
+    --text-dim: #9a9a9a;
+    --text-faint: #787880;
+    --border: #333333;
+    --hazard: #ff2a2a;
+    --hazard-rgb: 255, 42, 42;
+    --live: #4af626;
+    --live-rgb: 74, 246, 38;
   }
 
   @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) {
-      --bg: #fafafa;
-      --surface: #ffffff;
-      --surface-2: #f0f0f1;
-      --text: #0a0a0b;
-      --text-rgb: 10, 10, 11;
-      --text-dim: #54545c;
-      --text-faint: #8a8a92;
-      --border: #e2e2e5;
-      --live: #1f9e63;
-      --live-rgb: 31, 158, 99;
+      --bg: #f4f4f0;
+      --surface: #eae8e3;
+      --surface-2: #e2e0da;
+      --text: #0a0a0a;
+      --text-rgb: 10, 10, 10;
+      --text-dim: #4a4a48;
+      --text-faint: #6f6f76;
+      --border: #0a0a0a;
+      --hazard: #dd1818;
+      --hazard-rgb: 221, 24, 24;
+      --live: #dd1818;
+      --live-rgb: 221, 24, 24;
     }
   }
 
   :root[data-theme="light"] {
-    --bg: #fafafa;
-    --surface: #ffffff;
-    --surface-2: #f0f0f1;
-    --text: #0a0a0b;
-    --text-rgb: 10, 10, 11;
-    --text-dim: #54545c;
-    --text-faint: #8a8a92;
-    --border: #e2e2e5;
-    --live: #1f9e63;
-    --live-rgb: 31, 158, 99;
+    --bg: #f4f4f0;
+    --surface: #eae8e3;
+    --surface-2: #e2e0da;
+    --text: #0a0a0a;
+    --text-rgb: 10, 10, 10;
+    --text-dim: #4a4a48;
+    --text-faint: #6f6f76;
+    --border: #0a0a0a;
+    --hazard: #dd1818;
+    --hazard-rgb: 221, 24, 24;
+    --live: #dd1818;
+    --live-rgb: 221, 24, 24;
   }
 
   :root[data-theme="dark"] {
-    --bg: #0a0a0b;
-    --surface: #141416;
-    --surface-2: #1c1c1f;
-    --text: #f4f4f5;
-    --text-rgb: 244, 244, 245;
-    --text-dim: #a0a0a8;
-    --text-faint: #6b6b72;
-    --border: #2a2a2e;
-    --live: #2fd98f;
-    --live-rgb: 47, 217, 143;
+    --bg: #0a0a0a;
+    --surface: #0a0a0a;
+    --surface-2: #141414;
+    --text: #eaeaea;
+    --text-rgb: 234, 234, 234;
+    --text-dim: #9a9a9a;
+    --text-faint: #787880;
+    --border: #333333;
+    --hazard: #ff2a2a;
+    --hazard-rgb: 255, 42, 42;
+    --live: #4af626;
+    --live-rgb: 74, 246, 38;
   }
 
   * { box-sizing: border-box; }
@@ -90,7 +151,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     line-height: 1.6;
     -webkit-user-select: none;
@@ -107,8 +168,10 @@
     font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   }
 
+  /* was a cursive signature font -- no place for script in this archetype;
+     signature-styled bits now render as bracketed ASCII annotations instead */
   .signature-font {
-    font-family: "Caveat", cursive;
+    font-family: "JetBrains Mono", monospace;
   }
 
   .eyebrow {
@@ -128,7 +191,7 @@
     background: var(--surface);
     color: var(--text);
     padding: 0.6rem 1rem;
-    border-radius: 6px;
+    border-radius: 0;
     z-index: 100;
   }
   .skip-link:focus { left: 1rem; top: 1rem; }
@@ -163,8 +226,7 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
-    backdrop-filter: blur(10px);
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
   }
   .nav-mark {
@@ -208,7 +270,7 @@
     width: 34px;
     height: 34px;
     flex: none;
-    border-radius: 8px;
+    border-radius: 0;
     border: 1px solid var(--border);
     background: none;
     color: var(--text-dim);
@@ -228,23 +290,21 @@
   html[data-theme="dark"] .theme-icon-moon { display: block; }
   .nav-cta {
     position: relative;
-    font-size: 0.85rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     text-decoration: none;
     padding: 0.5rem 1rem;
-    border-radius: 7px;
+    border-radius: 0;
     white-space: nowrap;
-    color: var(--text);
-    border: 1.5px solid transparent;
-    background:
-      linear-gradient(var(--bg), var(--bg)) padding-box,
-      linear-gradient(90deg, transparent 0%, rgba(var(--text-rgb), 0.9) 45%, rgba(var(--text-rgb), 0.9) 55%, transparent 100%) border-box;
-    background-size: 100% 100%, 320% 100%;
-    box-shadow: 0 0 14px rgba(var(--text-rgb), 0.22);
-    animation: border-sweep 2.6s linear infinite;
-    transition: box-shadow 0.2s ease;
+    color: var(--bg);
+    border: 1.5px solid var(--hazard);
+    background: var(--hazard);
+    transition: background 0.15s, color 0.15s;
   }
-  .nav-cta:hover { box-shadow: 0 0 24px rgba(var(--text-rgb), 0.4); }
+  .nav-cta:hover { background: transparent; color: var(--hazard); }
 
   main { display: flex; flex-direction: column; }
 
@@ -266,10 +326,12 @@
   }
   .hero-inner { position: relative; z-index: 1; }
   .hero-name {
-    font-size: clamp(2.4rem, 6.4vw, 4rem);
-    font-weight: 800;
-    line-height: 1.08;
-    letter-spacing: -0.01em;
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-size: clamp(2.6rem, 8vw, 6rem);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
     margin-top: 0.9rem;
   }
   .type-line {
@@ -297,12 +359,12 @@
     margin-top: 1.75rem;
   }
   .btn {
-    font-family: "Manrope", sans-serif;
+    font-family: "Archivo", sans-serif;
     font-weight: 700;
     font-size: 0.92rem;
     text-decoration: none;
     padding: 0.8rem 1.4rem;
-    border-radius: 7px;
+    border-radius: 0;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text);
@@ -312,21 +374,12 @@
   }
   .btn-primary {
     position: relative;
-    color: var(--text);
-    border: 1.5px solid transparent;
-    background:
-      linear-gradient(var(--surface), var(--surface)) padding-box,
-      linear-gradient(90deg, transparent 0%, rgba(var(--text-rgb), 0.9) 45%, rgba(var(--text-rgb), 0.9) 55%, transparent 100%) border-box;
-    background-size: 100% 100%, 320% 100%;
-    box-shadow: 0 0 18px rgba(var(--text-rgb), 0.24);
-    animation: border-sweep 2.6s linear infinite;
-    transition: box-shadow 0.2s ease;
+    color: var(--bg);
+    border: 1.5px solid var(--hazard);
+    background: var(--hazard);
+    transition: background 0.15s, color 0.15s;
   }
-  .btn-primary:hover { box-shadow: 0 0 32px rgba(var(--text-rgb), 0.42); }
-  @keyframes border-sweep {
-    0% { background-position: 0 0, 0% 0; }
-    100% { background-position: 0 0, 100% 0; }
-  }
+  .btn-primary:hover { background: transparent; color: var(--hazard); }
   .btn:not(.btn-primary):hover { border-color: var(--text); }
   .btn-small {
     font-size: 0.82rem;
@@ -339,16 +392,17 @@
     display: inline-flex;
     align-items: baseline;
     gap: 0.5rem;
-    transform: rotate(-1.2deg);
   }
   .hero-note-arrow {
-    font-family: "Manrope", sans-serif;
+    font-family: "JetBrains Mono", monospace;
     font-size: 0.85rem;
-    color: var(--text-faint);
+    color: var(--hazard);
   }
   .hero-note-text {
-    font-family: "Caveat", cursive;
-    font-size: 1.5rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     line-height: 1;
     color: var(--text-dim);
   }
@@ -366,7 +420,7 @@
     font-size: 0.78rem;
     color: var(--text-dim);
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: 0;
     padding: 0.4rem 0.85rem 0.4rem 0.7rem;
     background: color-mix(in srgb, var(--bg) 70%, transparent);
   }
@@ -382,10 +436,14 @@
   }
   .panel-head { margin-bottom: 2rem; }
   .panel-title {
-    font-size: clamp(1.5rem, 3vw, 1.9rem);
-    font-weight: 800;
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 400;
+    text-transform: uppercase;
     letter-spacing: -0.01em;
   }
+  .panel-title::before { content: "[ "; color: var(--hazard); }
+  .panel-title::after { content: " ]"; color: var(--hazard); }
   .panel-sub {
     color: var(--text-dim);
     margin-top: 0.5rem;
@@ -483,7 +541,7 @@
   .trust-box {
     margin-top: 1.5rem;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     background: var(--surface);
     padding: clamp(1.25rem, 3vw, 1.75rem);
   }
@@ -558,7 +616,7 @@
     position: relative;
     border: 1px solid var(--border);
     background: var(--surface);
-    border-radius: 10px;
+    border-radius: 0;
     padding: 1.5rem;
     overflow: hidden;
     transition: border-color 0.2s;
@@ -566,13 +624,16 @@
   .offer-card::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), rgba(var(--text-rgb), 0.07), transparent 60%);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--hazard);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.15s ease;
     pointer-events: none;
   }
-  .offer-card:hover { border-color: var(--text-faint); }
+  .offer-card:hover { border-color: var(--text); }
   .offer-card:hover::before { opacity: 1; }
   .offer-title {
     position: relative;
@@ -600,7 +661,7 @@
     text-transform: uppercase;
     background: none;
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: 0;
     color: var(--text-dim);
     padding: 0.45rem 0.9rem;
     cursor: pointer;
@@ -626,10 +687,10 @@
   .projects-fade {
     position: absolute;
     inset: auto 0 0 0;
-    height: 130px;
-    background: linear-gradient(to bottom, transparent, var(--bg) 88%);
+    height: 3px;
+    background: var(--hazard);
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.15s ease;
   }
   .projects-collapse.is-expanded .projects-fade { opacity: 0; }
   .projects-more-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
@@ -639,7 +700,7 @@
     width: 94%;
     border: 1px solid var(--border);
     background: var(--surface);
-    border-radius: 10px;
+    border-radius: 0;
     overflow: hidden;
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.9fr);
@@ -652,14 +713,17 @@
   .project-card::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(var(--text-rgb), 0.07), transparent 60%);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--hazard);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.15s ease;
     pointer-events: none;
     z-index: 1;
   }
-  .project-card:hover { border-color: var(--text-faint); }
+  .project-card:hover { border-color: var(--text); }
   .project-card:hover::before { opacity: 1; }
   .project-card.is-hidden { display: none; }
   .project-content {
@@ -737,7 +801,7 @@
     max-height: 100%;
     width: auto;
     height: auto;
-    border-radius: 8px;
+    border-radius: 0;
     background: #000;
     outline: none;
   }
@@ -824,7 +888,7 @@
     font-family: "JetBrains Mono", monospace;
     font-size: 0.68rem;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 0;
     padding: 0.28rem 0.55rem;
     color: var(--text-dim);
   }
@@ -839,7 +903,7 @@
   .skill-group {
     position: relative;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     background: var(--surface);
     padding: clamp(1.25rem, 3vw, 1.5rem);
     overflow: hidden;
@@ -848,13 +912,16 @@
   .skill-group::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), rgba(var(--text-rgb), 0.07), transparent 60%);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--hazard);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.15s ease;
     pointer-events: none;
   }
-  .skill-group:hover { border-color: var(--text-faint); }
+  .skill-group:hover { border-color: var(--text); }
   .skill-group:hover::before { opacity: 1; }
   .stack-group-title {
     position: relative;
@@ -869,7 +936,7 @@
     font-size: 0.8rem;
     padding: 0.42rem 0.75rem;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 0;
     color: var(--text);
     background: var(--surface);
     transition: border-color 0.15s;
@@ -879,7 +946,7 @@
   /* reviews */
   .reviews-empty {
     border: 1px dashed var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     padding: clamp(1.5rem, 4vw, 2.25rem);
     display: flex;
     flex-direction: column;
@@ -900,7 +967,7 @@
   .contact-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -914,12 +981,12 @@
   .contact-action {
     align-self: flex-start;
     margin-top: 0.3rem;
-    font-family: "Manrope", sans-serif;
+    font-family: "Archivo", sans-serif;
     font-weight: 700;
     font-size: 0.85rem;
     background: none;
     border: 1px solid var(--border);
-    border-radius: 7px;
+    border-radius: 0;
     color: var(--text-dim);
     padding: 0.55rem 0.9rem;
     cursor: pointer;
@@ -938,11 +1005,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: 0;
     padding: 0.4rem;
-    backdrop-filter: blur(8px);
   }
   .sound-label {
     font-family: "JetBrains Mono", monospace;
@@ -958,7 +1024,7 @@
     letter-spacing: 0.03em;
     background: none;
     border: none;
-    border-radius: 999px;
+    border-radius: 0;
     color: var(--text-dim);
     padding: 0.4rem 0.75rem;
     cursor: pointer;
@@ -983,7 +1049,7 @@
     gap: 0.75rem;
   }
   .footer-sig {
-    font-family: "Caveat", cursive;
+    font-family: "JetBrains Mono", monospace;
     font-size: 2.1rem;
     line-height: 1;
     color: var(--text);
@@ -1002,7 +1068,7 @@
   }
   .signature {
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 0;
     background: #1e1e1e;
     overflow: hidden;
     margin-top: 1.5rem;
@@ -1065,16 +1131,15 @@
     font-family: "JetBrains Mono", monospace;
     font-size: 0.7rem;
     color: var(--text-faint);
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: 0;
     padding: 0.45rem 0.85rem;
-    backdrop-filter: blur(8px);
   }
   .kbd-hint kbd {
     font-family: inherit;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 0.05rem 0.4rem;
     color: var(--text-dim);
     background: var(--surface-2);
@@ -1095,9 +1160,9 @@
   .cmdk-panel {
     width: min(560px, 92vw);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 0;
     background: var(--surface);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    box-shadow: 8px 8px 0 var(--hazard);
     overflow: hidden;
   }
   .cmdk-input {
@@ -1106,7 +1171,7 @@
     border-bottom: 1px solid var(--border);
     background: transparent;
     color: var(--text);
-    font-family: "Manrope", sans-serif;
+    font-family: "Archivo", sans-serif;
     font-size: 1rem;
     padding: 1rem 1.1rem;
     outline: none;
@@ -1118,7 +1183,7 @@
     align-items: center;
     gap: 1rem;
     padding: 0.65rem 0.8rem;
-    border-radius: 7px;
+    border-radius: 0;
     cursor: pointer;
     color: var(--text-dim);
     font-size: 0.9rem;
@@ -1163,9 +1228,9 @@
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 0;
     background: var(--surface);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    box-shadow: 8px 8px 0 var(--hazard);
   }
   .terms-header {
     display: flex;
@@ -1179,7 +1244,7 @@
   .terms-close {
     background: none;
     border: 1px solid var(--border);
-    border-radius: 7px;
+    border-radius: 0;
     color: var(--text-dim);
     width: 32px;
     height: 32px;
@@ -1207,7 +1272,7 @@
     padding: 0.65rem 0.9rem;
     border-left: 2px solid var(--border);
     background: var(--surface-2);
-    border-radius: 0 6px 6px 0;
+    border-radius: 0;
     font-size: 0.86rem;
     color: var(--text-faint);
   }
@@ -1301,7 +1366,7 @@
   .faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
   .faq-item {
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 0;
     background: var(--surface);
     overflow: hidden;
   }

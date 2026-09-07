@@ -106,7 +106,7 @@
       --text: #0a0a0a;
       --text-rgb: 10, 10, 10;
       --text-dim: #4a4a48;
-      --text-faint: #6f6f76;
+      --text-faint: #606066;
       --border: #0a0a0a;
       --hazard: #dd1818;
       --hazard-rgb: 221, 24, 24;
@@ -122,7 +122,7 @@
     --text: #0a0a0a;
     --text-rgb: 10, 10, 10;
     --text-dim: #4a4a48;
-    --text-faint: #6f6f76;
+    --text-faint: #606066;
     --border: #0a0a0a;
     --hazard: #dd1818;
     --hazard-rgb: 221, 24, 24;
@@ -263,6 +263,24 @@
     transition: color 0.15s, border-color 0.15s;
   }
   .nav-terms-btn:hover { color: var(--text); border-color: var(--text); }
+  .nav-burger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border-radius: 0;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .nav-burger:hover { color: var(--text); border-color: var(--text-dim); background: var(--surface-2); }
+  .burger-icon-close { display: none; }
+  .nav-burger[aria-expanded="true"] .burger-icon-open { display: none; }
+  .nav-burger[aria-expanded="true"] .burger-icon-close { display: block; }
   .theme-toggle {
     display: inline-flex;
     align-items: center;
@@ -837,7 +855,7 @@
   .project-mark-tag {
     position: relative;
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-faint);
@@ -877,7 +895,7 @@
   }
   .meta-label {
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-faint);
@@ -886,7 +904,7 @@
   .tag-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .tag {
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     border: 1px solid var(--border);
     border-radius: 0;
     padding: 0.28rem 0.55rem;
@@ -1012,7 +1030,7 @@
   }
   .sound-label {
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-faint);
@@ -1192,7 +1210,7 @@
   .cmdk-item.is-active { background: var(--surface-2); color: var(--text); }
   .cmdk-item-hint {
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     color: var(--text-faint);
   }
   .cmdk-empty { padding: 1.25rem; color: var(--text-faint); font-size: 0.88rem; }
@@ -1316,7 +1334,7 @@
     top: 1rem;
     left: 1.25rem;
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-faint);
@@ -1328,7 +1346,7 @@
     right: 0.85rem;
     z-index: 1;
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     color: var(--text-faint);
     pointer-events: none;
   }
@@ -1406,7 +1424,34 @@
     .project-card { grid-template-columns: 1fr; width: 100%; margin: 0; }
     .project-media { border-left: none; border-top: 1px solid var(--border); min-height: 180px; }
     .video-expand-btn { width: 42px; height: 42px; }
-    .nav-links { display: none; }
+    .nav-burger { display: inline-flex; }
+    .nav-links {
+      display: none;
+      position: fixed;
+      top: var(--nav-h, 58px);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 30;
+      flex-direction: column;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      overflow-y: auto;
+    }
+    .nav-links.is-open { display: flex; }
+    .nav-links li { width: 100%; border-bottom: 1px solid var(--border); }
+    .nav-links a, .nav-links .nav-terms-btn {
+      display: block;
+      width: 100%;
+      padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+      font-size: 1rem;
+      text-align: left;
+      border-bottom: none;
+    }
+    html.nav-scroll-lock, html.nav-scroll-lock body { overflow: hidden; }
     .sound-label { display: none; }
     .kbd-hint { display: none; }
   }
@@ -1437,7 +1482,7 @@
 
 <nav class="nav">
   <span class="nav-mark">Stam<sup>&reg;</sup></span>
-  <ul class="nav-links">
+  <ul class="nav-links" id="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#offer">What I do</a></li>
     <li><a href="#how">Process</a></li>
@@ -1448,6 +1493,10 @@
     <li><a href="https://github.com/Stamyyyy" target="_blank" rel="noopener">GitHub</a></li>
     <li><button class="nav-terms-btn" type="button" data-open-terms>Terms</button></li>
   </ul>
+  <button class="nav-burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+    <svg class="burger-icon burger-icon-open" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="burger-icon burger-icon-close" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
   <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode">
     <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 1020.354 15.354z" fill="currentColor"/></svg>
     <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="4.9" y1="4.9" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.1" y2="4.9"/></g></svg>
@@ -2373,6 +2422,48 @@
         try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
       });
     }
+  })();
+
+  /* mobile nav drawer */
+  (function () {
+    var burger = document.getElementById("nav-burger");
+    var links = document.getElementById("nav-links");
+    var navEl = document.querySelector(".nav");
+    if (!burger || !links || !navEl) return;
+
+    function setNavHeightVar() {
+      document.documentElement.style.setProperty("--nav-h", navEl.offsetHeight + "px");
+    }
+    function closeMenu() {
+      links.classList.remove("is-open");
+      burger.setAttribute("aria-expanded", "false");
+      burger.setAttribute("aria-label", "Open menu");
+      document.documentElement.classList.remove("nav-scroll-lock");
+    }
+    function openMenu() {
+      setNavHeightVar();
+      links.classList.add("is-open");
+      burger.setAttribute("aria-expanded", "true");
+      burger.setAttribute("aria-label", "Close menu");
+      document.documentElement.classList.add("nav-scroll-lock");
+    }
+
+    burger.addEventListener("click", function () {
+      if (links.classList.contains("is-open")) closeMenu(); else openMenu();
+    });
+    links.addEventListener("click", function (e) {
+      if (e.target.closest("a, button")) closeMenu();
+    });
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && links.classList.contains("is-open")) {
+        closeMenu();
+        burger.focus();
+      }
+    });
+    window.addEventListener("resize", function () {
+      if (links.classList.contains("is-open")) setNavHeightVar();
+      else if (window.innerWidth > 760) closeMenu();
+    });
   })();
 
   /* show more projects */

@@ -26,6 +26,21 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v2.png">
+<link rel="canonical" href="https://stam-console.web.app/">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<meta name="theme-color" content="#0a0a0a">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Stam",
+  "url": "https://stam-console.web.app/",
+  "jobTitle": "Full-stack developer",
+  "description": "Full-stack developer building Discord bots, web apps and databases, and desktop applications.",
+  "sameAs": ["https://github.com/Stamyyyy"]
+}
+</script>
 <style>
   @font-face {
     font-family: "Archivo";
@@ -1312,6 +1327,39 @@
   }
   .terms-sublist li { color: var(--text-dim); font-size: 0.92rem; padding-left: 0.3rem; }
 
+  /* contact form modal (shares .terms-scrim/.terms-panel chrome) */
+  .contact-form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .form-input, .form-textarea {
+    font-family: "Archivo", sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 0.65rem 0.8rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--hazard); }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+  .form-status {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    color: var(--text-faint);
+  }
+  .form-status[data-state="ok"] { color: var(--live); }
+  .form-status[data-state="error"] { color: var(--hazard); }
+
   /* project card flip */
   .card-back {
     position: absolute;
@@ -2087,6 +2135,11 @@
     </div>
     <div class="contact-grid stagger">
       <div class="contact-card">
+        <span class="eyebrow">Message</span>
+        <span class="contact-value">Skip the email client</span>
+        <button class="btn btn-primary btn-small" type="button" data-open-contact-form>Send a message</button>
+      </div>
+      <div class="contact-card">
         <span class="eyebrow">Email</span>
         <span class="contact-value" id="email-value">stamsbuisness@gmail.com</span>
         <a class="btn btn-primary btn-small" href="mailto:stamsbuisness@gmail.com">Send email</a>
@@ -2230,6 +2283,39 @@
   </div>
 </div>
 
+<div class="terms-scrim" id="contact-form-scrim" hidden>
+  <div class="terms-panel" role="dialog" aria-modal="true" aria-label="Send a message">
+    <div class="terms-header">
+      <span class="terms-title">Send a message</span>
+      <button class="terms-close" id="contact-form-close" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="terms-body">
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-field">
+          <label class="form-label" for="contact-form-name">Name</label>
+          <input class="form-input" type="text" id="contact-form-name" name="name" autocomplete="name" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="contact-form-email">Email</label>
+          <input class="form-input" type="email" id="contact-form-email" name="email" autocomplete="email" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="contact-form-message">Message</label>
+          <textarea class="form-textarea" id="contact-form-message" name="message" required></textarea>
+        </div>
+        <div class="form-field form-honeypot" aria-hidden="true">
+          <label class="form-label" for="contact-form-botcheck">Leave this field empty</label>
+          <input class="form-input" type="text" id="contact-form-botcheck" name="botcheck" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="form-actions">
+          <span class="form-status" id="contact-form-status" role="status" aria-live="polite"></span>
+          <button class="btn btn-primary" type="submit" id="contact-form-submit">Send</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
   "use strict";
@@ -2237,9 +2323,10 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.__stamAudio = { level: 0, active: false };
 
-  /* block copy/cut/right-click everywhere except the contact section (email/discord/github values) */
+  /* block copy/cut/right-click everywhere except the contact section (email/discord/github values)
+     and the contact form modal, where visitors need normal copy/paste/right-click in the fields */
   function outsideContact(e) {
-    return !e.target.closest(".contact-grid");
+    return !e.target.closest(".contact-grid") && !e.target.closest("#contact-form-scrim");
   }
   ["copy", "cut", "contextmenu"].forEach(function (evt) {
     document.addEventListener(evt, function (e) {
@@ -3004,6 +3091,87 @@
     });
   })();
 
+  /* contact form modal */
+  (function () {
+    var trigger = document.querySelector("[data-open-contact-form]");
+    var scrim = document.getElementById("contact-form-scrim");
+    var closeBtn = document.getElementById("contact-form-close");
+    var form = document.getElementById("contact-form");
+    var status = document.getElementById("contact-form-status");
+    var submitBtn = document.getElementById("contact-form-submit");
+    var nameField = document.getElementById("contact-form-name");
+    if (!trigger || !scrim || !closeBtn || !form) return;
+
+    var WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+    var lastFocused = null;
+
+    function setStatus(text, state) {
+      status.textContent = text;
+      if (state) status.setAttribute("data-state", state);
+      else status.removeAttribute("data-state");
+    }
+    function open(e) {
+      lastFocused = (e && e.currentTarget) || null;
+      scrim.hidden = false;
+      setStatus("", null);
+      if (nameField) nameField.focus();
+    }
+    function close() {
+      scrim.hidden = true;
+      if (lastFocused) lastFocused.focus();
+    }
+
+    trigger.addEventListener("click", open);
+    closeBtn.addEventListener("click", close);
+    scrim.addEventListener("click", function (e) { if (e.target === scrim) close(); });
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !scrim.hidden) close();
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var botcheck = form.querySelector('[name="botcheck"]');
+      if (botcheck && botcheck.value) return; // silently drop bot submissions
+
+      if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY") {
+        setStatus("Form isn't wired up yet — email me directly for now.", "error");
+        return;
+      }
+
+      var payload = {
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: "New message from stam-console",
+        name: form.querySelector('[name="name"]').value,
+        email: form.querySelector('[name="email"]').value,
+        message: form.querySelector('[name="message"]').value
+      };
+
+      submitBtn.disabled = true;
+      setStatus("Sending...", null);
+
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          submitBtn.disabled = false;
+          if (data.success) {
+            setStatus("Message sent. I'll get back to you soon.", "ok");
+            form.reset();
+          } else {
+            setStatus("Something went wrong. Try emailing me directly.", "error");
+          }
+        })
+        .catch(function () {
+          submitBtn.disabled = false;
+          setStatus("Network error. Try emailing me directly.", "error");
+        });
+    });
+  })();
+
   /* command palette */
   (function () {
     var scrim = document.getElementById("cmdk-scrim");
@@ -3034,6 +3202,7 @@
       { label: "Go to Skills", hint: "Section", action: function () { scrollToId("skills"); } },
       { label: "Go to FAQ", hint: "Section", action: function () { scrollToId("faq"); } },
       { label: "Go to Contact", hint: "Section", action: function () { scrollToId("contact"); } },
+      { label: "Send a message", hint: "Modal", action: function () { var t = document.querySelector("[data-open-contact-form]"); if (t) t.click(); } },
       { label: "Read my terms", hint: "Modal", action: function () { var t = document.querySelector("[data-open-terms]"); if (t) t.click(); } },
       { label: "Email me", hint: "mailto", action: function () { window.location.href = "mailto:stamsbuisness@gmail.com"; } },
       { label: "Copy email address", hint: "Clipboard", action: function () { copyText("stamsbuisness@gmail.com"); } },

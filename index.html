@@ -1062,7 +1062,6 @@
     border-radius: 0;
     background: var(--surface);
     padding: clamp(1.25rem, 3vw, 1.5rem);
-    overflow: hidden;
     transition: border-color 0.2s;
   }
   .skill-group::before {
@@ -1088,6 +1087,7 @@
   }
   .chip-grid { position: relative; display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .chip {
+    position: relative;
     font-family: "JetBrains Mono", monospace;
     font-size: 0.8rem;
     padding: 0.42rem 0.75rem;
@@ -1096,8 +1096,99 @@
     color: var(--text);
     background: var(--surface);
     transition: border-color 0.15s;
+    cursor: default;
   }
-  .chip:hover { border-color: var(--text-dim); }
+  .chip:hover, .chip:focus, .chip:focus-visible { border-color: var(--text-dim); outline: none; }
+  .chip:focus-visible { border-color: var(--hazard); }
+
+  /* skill-chip tooltip: a small chatbox-style popover, not a native title
+     attribute -- carries a real description plus an inline link. Shown on
+     hover AND focus/focus-within so the link inside is keyboard-reachable:
+     tabbing from the chip moves focus onto the link without ever leaving
+     this subtree, so focus-within stays true the whole time. */
+  .chip-tip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    z-index: 5;
+    width: max-content;
+    max-width: min(220px, calc(100vw - 2.5rem));
+    padding: 0.65rem 0.75rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-family: "Archivo", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    line-height: 1.45;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text-dim);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
+  }
+  .chip-tip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top-color: var(--border);
+  }
+  .chip-tip a { color: var(--hazard); text-decoration: underline; text-underline-offset: 2px; }
+  .chip:hover .chip-tip,
+  .chip:focus .chip-tip,
+  .chip:focus-within .chip-tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chip-tip { transition: none; }
+  }
+  @media (max-width: 760px) {
+    /* Floating popovers are fragile on narrow screens -- centering under a
+       chip near the viewport edge still overflows even with a width cap.
+       Below the site's own mobile breakpoint the tip becomes an inline
+       expansion instead: it grows the chip's own box downward, so it can
+       never exceed the viewport regardless of where the chip sits. */
+    .chip { display: inline-flex; flex-direction: column; align-items: flex-start; }
+    .chip-tip {
+      position: static;
+      display: block;
+      width: 100%;
+      max-width: none;
+      margin-top: 0;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: none;
+      max-height: 0;
+      padding: 0 0.1px;
+      border: none;
+      overflow: hidden;
+      transition: max-height 0.2s ease, margin-top 0.2s ease;
+    }
+    .chip-tip::after { display: none; }
+    .chip:hover .chip-tip,
+    .chip:focus .chip-tip,
+    .chip:focus-within .chip-tip {
+      transform: none;
+      max-height: 160px;
+      margin-top: 0.55rem;
+      padding: 0.6rem 0.7rem;
+      border: 1px solid var(--border);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .chip-tip { transition: none; }
+    }
+  }
 
   /* reviews */
   .reviews-empty {
@@ -1690,7 +1781,7 @@
 </nav>
 
 <main id="main">
-  <section class="hero">
+  <section class="hero" id="hero">
     <div class="hero-viewport" aria-hidden="true">
       <canvas id="hero-metal"></canvas>
       <canvas id="hero-grid"></canvas>
@@ -2201,39 +2292,39 @@
       <div class="skill-group">
         <div class="stack-group-title">Languages</div>
         <div class="chip-grid stagger">
-          <span class="chip">HTML</span>
-          <span class="chip">CSS</span>
-          <span class="chip">JavaScript</span>
-          <span class="chip">TypeScript</span>
-          <span class="chip">Python</span>
-          <span class="chip">C</span>
-          <span class="chip">C++</span>
-          <span class="chip">C#</span>
-          <span class="chip">SQL</span>
-          <span class="chip">Lua</span>
-          <span class="chip">Luau</span>
-          <span class="chip">Bash</span>
+          <span class="chip" tabindex="0">HTML<span class="chip-tip" role="tooltip">Markup for every page I've built, this one included.</span></span>
+          <span class="chip" tabindex="0">CSS<span class="chip-tip" role="tooltip">All the styling on this site is hand-written, no framework.</span></span>
+          <span class="chip" tabindex="0">JavaScript<span class="chip-tip" role="tooltip">Runs this site and most of what I build — <a href="#work">see the work section</a>.</span></span>
+          <span class="chip" tabindex="0">TypeScript<span class="chip-tip" role="tooltip">Typed JavaScript. My default now once a project gets past a few hundred lines.</span></span>
+          <span class="chip" tabindex="0">Python<span class="chip-tip" role="tooltip">General scripting and automation work.</span></span>
+          <span class="chip" tabindex="0">C<span class="chip-tip" role="tooltip">For the rare case where I need to talk to the OS directly, no runtime in the way.</span></span>
+          <span class="chip" tabindex="0">C++<span class="chip-tip" role="tooltip">Used for a native Win32 addon in <a href="#work">Wraith</a>, after Node's own fs module misclassified a raw volume handle.</span></span>
+          <span class="chip" tabindex="0">C#<span class="chip-tip" role="tooltip">.NET-side tooling work.</span></span>
+          <span class="chip" tabindex="0">SQL<span class="chip-tip" role="tooltip">Schema and queries behind the database-backed apps I build.</span></span>
+          <span class="chip" tabindex="0">Lua<span class="chip-tip" role="tooltip">What Roblox scripting is built on, before Roblox's own typed dialect.</span></span>
+          <span class="chip" tabindex="0">Luau<span class="chip-tip" role="tooltip">Roblox's typed Lua dialect — what <a href="#work">Poltergeist</a> is written in.</span></span>
+          <span class="chip" tabindex="0">Bash<span class="chip-tip" role="tooltip">Shell scripting for dev tooling and automation.</span></span>
         </div>
       </div>
       <div class="skill-group">
         <div class="stack-group-title">Tools &amp; frameworks</div>
         <div class="chip-grid stagger">
-          <span class="chip">Electron</span>
-          <span class="chip">Three.js</span>
-          <span class="chip">Node.js</span>
-          <span class="chip">Cloud databases</span>
-          <span class="chip">Web Audio API</span>
-          <span class="chip">Roblox Studio</span>
-          <span class="chip">Git</span>
+          <span class="chip" tabindex="0">Electron<span class="chip-tip" role="tooltip">Wraps <a href="#work">JARVIS, Specter, Wraith, Séance, and Revenant</a> as native-feeling desktop apps.</span></span>
+          <span class="chip" tabindex="0">Three.js<span class="chip-tip" role="tooltip">3D rendering behind <a href="#work">JARVIS's</a> particle boot sequence.</span></span>
+          <span class="chip" tabindex="0">Node.js<span class="chip-tip" role="tooltip">The runtime under every Electron app here, and behind my Discord bots.</span></span>
+          <span class="chip" tabindex="0">Cloud databases<span class="chip-tip" role="tooltip">Backing store for the Discord bots and web apps that need to remember things.</span></span>
+          <span class="chip" tabindex="0">Web Audio API<span class="chip-tip" role="tooltip">Generates <a href="#work">JARVIS's</a> startup sound live, no audio file, and this page's own ambient sound toggle.</span></span>
+          <span class="chip" tabindex="0">Roblox Studio<span class="chip-tip" role="tooltip">Where <a href="#work">Poltergeist</a> actually runs, as a Studio plugin.</span></span>
+          <span class="chip" tabindex="0">Git<span class="chip-tip" role="tooltip">Version control for literally everything I build, including this site.</span></span>
         </div>
       </div>
       <div class="skill-group">
         <div class="stack-group-title">Workflow</div>
         <div class="chip-grid stagger">
-          <span class="chip">AI-assisted development</span>
-          <span class="chip">Desktop packaging</span>
-          <span class="chip">Automation</span>
-          <span class="chip">Interface design</span>
+          <span class="chip" tabindex="0">AI-assisted development<span class="chip-tip" role="tooltip">I use AI tools as a force multiplier, not a replacement. I still read and own every line that ships.</span></span>
+          <span class="chip" tabindex="0">Desktop packaging<span class="chip-tip" role="tooltip">Turning a script into an actual installable app with a real installer, not just a folder of files.</span></span>
+          <span class="chip" tabindex="0">Automation<span class="chip-tip" role="tooltip">Scripts and tooling that remove a manual step, for myself or for a client.</span></span>
+          <span class="chip" tabindex="0">Interface design<span class="chip-tip" role="tooltip">The visual and motion side of a build — <a href="#hero">this site included</a>.</span></span>
         </div>
       </div>
     </div>

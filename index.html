@@ -659,10 +659,64 @@
     opacity: 0;
     pointer-events: none;
   }
-  .loader-line {
-    font-size: 0.95rem;
+  .loader-inner { display: flex; flex-direction: column; align-items: center; gap: 1.15rem; }
+  .loader-logo { overflow: visible; }
+  .loader-logo-frame {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+    opacity: 0;
+    animation: loaderFrameIn 0.4s ease 0.1s forwards;
+  }
+  .loader-logo-chevron {
+    fill: none;
+    stroke: #2fd98f;
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 44;
+    stroke-dashoffset: 44;
+    animation: loaderDraw 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  }
+  .loader-logo-bar {
+    fill: #2fd98f;
+    opacity: 0;
+    transform-origin: 44px 41.5px;
+    transform: scaleX(0);
+    animation: loaderBarIn 0.25s ease 0.85s forwards;
+  }
+  .loader-logo.is-glitching { animation: loaderGlitch 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes loaderFrameIn { to { opacity: 1; } }
+  @keyframes loaderDraw { to { stroke-dashoffset: 0; } }
+  @keyframes loaderBarIn { to { opacity: 1; transform: scaleX(1); } }
+  @keyframes loaderGlitch {
+    0% { filter: drop-shadow(3px 0 #00f0ff) drop-shadow(-3px 0 #ff2ad4); transform: translateX(-2px); }
+    30% { filter: drop-shadow(-3px 0 #00f0ff) drop-shadow(3px 0 #ff2ad4); transform: translateX(2px); }
+    60% { filter: drop-shadow(1px 0 #00f0ff) drop-shadow(-1px 0 #ff2ad4); transform: translateX(-1px); }
+    100% { filter: none; transform: none; }
+  }
+  .loader-log {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-height: 4.6rem;
+    font-size: 0.85rem;
     color: var(--text-dim);
     letter-spacing: 0.01em;
+    text-align: left;
+  }
+  .loader-log-line.is-current::after {
+    content: "";
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-left: 2px;
+    background: var(--text-dim);
+    vertical-align: -0.15em;
+    animation: blink 0.9s step-end infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loader-logo-frame, .loader-logo-chevron, .loader-logo-bar, .loader-logo.is-glitching { animation: none; opacity: 1; stroke-dashoffset: 0; transform: none; filter: none; }
   }
 
   /* about */
@@ -1748,7 +1802,14 @@
 </head>
 <body>
 <div id="loader" role="presentation">
-  <span class="loader-line mono" id="loader-text"></span>
+  <div class="loader-inner">
+    <svg class="loader-logo" id="loader-logo" viewBox="0 0 64 64" width="76" height="76" aria-hidden="true">
+      <rect class="loader-logo-frame" x="1.5" y="1.5" width="61" height="61" rx="13" />
+      <path class="loader-logo-chevron" d="M14 20 L30 32 L14 44" />
+      <rect class="loader-logo-bar" x="36" y="38" width="16" height="7" rx="2" />
+    </svg>
+    <div class="loader-log mono" id="loader-log"></div>
+  </div>
 </div>
 
 <div id="scroll-progress" aria-hidden="true"></div>
@@ -2699,10 +2760,49 @@
     }, 350);
   }
 
+  /* Runs the multi-line typewriter boot log into #loader-log, one line at a
+     time (append-and-keep, like a real terminal), then flashes a
+     chromatic-aberration glitch on the logo mark before calling onDone.
+     Shared by the first-visit boot sequence and the "jarvis" easter egg
+     replay below, so there's exactly one boot-sequence implementation. */
+  function runBootLog(lines, onDone) {
+    var logo = document.getElementById("loader-logo");
+    var log = document.getElementById("loader-log");
+    if (!log) { onDone(); return; }
+    log.textContent = "";
+
+    var li = 0;
+    function typeLine() {
+      if (li >= lines.length) {
+        if (logo) {
+          logo.classList.add("is-glitching");
+          logo.addEventListener("animationend", function () { logo.classList.remove("is-glitching"); }, { once: true });
+        }
+        setTimeout(onDone, 380);
+        return;
+      }
+      var el = document.createElement("div");
+      el.className = "loader-log-line is-current";
+      log.appendChild(el);
+      var text = lines[li];
+      var ci = 0;
+      var timer = setInterval(function () {
+        el.textContent = text.slice(0, ci);
+        ci++;
+        if (ci > text.length) {
+          clearInterval(timer);
+          el.classList.remove("is-current");
+          li++;
+          setTimeout(typeLine, 160);
+        }
+      }, 20);
+    }
+    typeLine();
+  }
+
   /* boot loader: brief on first visit this session, skippable, gone under reduced motion */
   (function () {
     var loader = document.getElementById("loader");
-    var loaderText = document.getElementById("loader-text");
     if (!loader) { startHeroIntro(); return; }
 
     var seen = false;
@@ -2725,20 +2825,15 @@
       startHeroIntro();
     }
 
-    var bootText = "initializing stam console...";
-    var bi = 0;
-    var bootTimer = setInterval(function () {
-      loaderText.textContent = bootText.slice(0, bi);
-      bi++;
-      if (bi > bootText.length) {
-        clearInterval(bootTimer);
-        setTimeout(finish, 260);
-      }
-    }, 24);
+    runBootLog([
+      "STAM_CONSOLE // BOOT",
+      "loading modules... ok",
+      "console ready."
+    ], finish);
 
     loader.addEventListener("click", finish);
     window.addEventListener("keydown", finish, { once: true });
-    setTimeout(finish, 1600);
+    setTimeout(finish, 3200);
   })();
 
   /* scroll reveal */
@@ -3554,28 +3649,17 @@
     });
   })();
 
-  /* full-screen message flash, reuses the boot loader overlay */
+  /* full-screen message flash, reuses the boot loader overlay + runBootLog */
   function replayBoot(message) {
     if (reduceMotion) return;
     var loader = document.getElementById("loader");
-    var loaderText = document.getElementById("loader-text");
-    if (!loader || !loaderText) return;
+    if (!loader) return;
     loader.style.display = "flex";
     loader.classList.remove("is-hidden");
-    var text = message || "hey, you found it.";
-    var i = 0;
-    loaderText.textContent = "";
-    var t = setInterval(function () {
-      loaderText.textContent = text.slice(0, i);
-      i++;
-      if (i > text.length) {
-        clearInterval(t);
-        setTimeout(function () {
-          loader.classList.add("is-hidden");
-          setTimeout(function () { loader.style.display = "none"; }, 400);
-        }, 700);
-      }
-    }, 28);
+    runBootLog([message || "hey, you found it."], function () {
+      loader.classList.add("is-hidden");
+      setTimeout(function () { loader.style.display = "none"; }, 400);
+    });
   }
 
   /* easter egg: type "jarvis" anywhere on the page */

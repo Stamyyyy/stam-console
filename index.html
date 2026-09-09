@@ -15,11 +15,11 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stam Console</title>
-<meta name="description" content="Stam — full-stack developer building Discord bots, web apps and databases, and desktop applications. Commissioned client work delivered, open for new projects.">
+<meta name="description" content="Stam — full-stack developer building Discord bots, web apps and databases, and desktop applications. Open for new projects.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0b'/%3E%3Cpath d='M14 20 L30 32 L14 44' stroke='%232fd98f' stroke-width='7' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Crect x='36' y='38' width='16' height='7' rx='2' fill='%232fd98f'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Stam — Full-stack developer">
-<meta property="og:description" content="Discord bots, desktop apps, web apps, and the databases behind them. Commissioned client work delivered, open for new projects.">
+<meta property="og:description" content="Discord bots, desktop apps, web apps, and the databases behind them. I can make them all.">
 <meta property="og:url" content="https://stam-console.web.app/">
 <meta property="og:image" content="https://stam-console.web.app/assets/og-image-v2.png">
 <meta property="og:image:width" content="1200">
@@ -667,14 +667,30 @@
     opacity: 0;
     pointer-events: none;
   }
-  .loader-inner { display: flex; flex-direction: column; align-items: center; gap: 1.15rem; }
+  .loader-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.15rem;
+    transform: scale(2.2);
+    opacity: 0;
+    animation: loaderZoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes loaderZoomIn {
+    0% { transform: scale(2.2); opacity: 0; }
+    60% { opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loader-inner { animation: none; transform: none; opacity: 1; }
+  }
   .loader-logo { overflow: visible; }
   .loader-logo-frame {
     fill: none;
     stroke: var(--border);
     stroke-width: 1.5;
     opacity: 0;
-    animation: loaderFrameIn 0.4s ease 0.1s forwards;
+    animation: loaderFrameIn 0.3s ease 0.5s forwards;
   }
   .loader-logo-chevron {
     fill: none;
@@ -684,14 +700,14 @@
     stroke-linejoin: round;
     stroke-dasharray: 44;
     stroke-dashoffset: 44;
-    animation: loaderDraw 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    animation: loaderDraw 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
   }
   .loader-logo-bar {
     fill: #2fd98f;
     opacity: 0;
     transform-origin: 44px 41.5px;
     transform: scaleX(0);
-    animation: loaderBarIn 0.25s ease 0.85s forwards;
+    animation: loaderBarIn 0.2s ease 1.05s forwards;
   }
   .loader-logo.is-glitching { animation: loaderGlitch 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   @keyframes loaderFrameIn { to { opacity: 1; } }
@@ -754,40 +770,6 @@
     font-size: 0.92rem;
   }
   .fact-row .mono { color: var(--text-faint); }
-
-  /* trust callout */
-  .trust-box {
-    margin-top: 1.5rem;
-    border: 1px solid var(--border);
-    border-radius: 0;
-    background: var(--surface);
-    padding: clamp(1.25rem, 3vw, 1.75rem);
-  }
-  .trust-lead {
-    font-weight: 700;
-    font-size: 1.02rem;
-    margin: 0 0 0.9rem;
-  }
-  .trust-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    color: var(--text-dim);
-    font-size: 0.92rem;
-  }
-  .trust-list li { padding-left: 1.1rem; position: relative; }
-  .trust-list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 6px;
-    height: 1px;
-    background: var(--live);
-  }
 
   /* how I work */
   .steps {
@@ -1901,14 +1883,8 @@
     </div>
     <div class="about-grid">
       <div class="about-copy">
-        <p>I'm Stam. I got into programming through robotics — wanting to build things that actually worked, not just sat on paper. That turned into software: desktop apps, Discord bots, databases, and the sites that tie them together.</p>
-        <p>No classroom background. I learned by building things and fixing what broke. I take on projects where the person on the other end already knows what they want built.</p>
-        <div class="trust-box">
-          <p class="trust-lead">Track record</p>
-          <ul class="trust-list">
-            <li>Delivered commissioned work for multiple clients</li>
-          </ul>
-        </div>
+        <p>I'm Stam. Got into this through robotics — wanted to build things that actually worked, not just sat on paper. That became software: bots, apps, the databases behind them.</p>
+        <p>No classroom, no bootcamp. I learned by breaking things and fixing them myself.</p>
       </div>
       <div class="fact-list stagger">
         <div class="fact-row"><span>Languages</span><span class="mono">JS, TS, PY, C, C++, C#, HTML, CSS, SQL, Lua, Luau, Bash</span></div>
@@ -1919,7 +1895,7 @@
   <section id="offer" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">What I can build.</h2>
-      <p class="panel-sub">I've already delivered commissioned work for a client. I'm looking for more people like that.</p>
+      <p class="panel-sub">Here's what I actually build.</p>
     </div>
     <div class="offer-grid stagger">
       <div class="offer-card">
@@ -2437,7 +2413,7 @@
       </details>
       <details class="faq-item">
         <summary>How old are you?</summary>
-        <p class="faq-answer">15. I've delivered commissioned work for clients.</p>
+        <p class="faq-answer">15.</p>
       </details>
       <details class="faq-item">
         <summary>What if I'm not sure exactly what I need?</summary>
@@ -2785,7 +2761,7 @@
      chromatic-aberration glitch on the logo mark before calling onDone.
      Shared by the first-visit boot sequence and the "jarvis" easter egg
      replay below, so there's exactly one boot-sequence implementation. */
-  function runBootLog(lines, onDone) {
+  function runBootLog(lines, onDone, startDelay) {
     var logo = document.getElementById("loader-logo");
     var log = document.getElementById("loader-log");
     if (!log) { onDone(); return; }
@@ -2813,11 +2789,11 @@
           clearInterval(timer);
           el.classList.remove("is-current");
           li++;
-          setTimeout(typeLine, 160);
+          setTimeout(typeLine, 90);
         }
-      }, 20);
+      }, 13);
     }
-    typeLine();
+    setTimeout(typeLine, startDelay || 0);
   }
 
   /* boot loader: brief on first visit this session, skippable, gone under reduced motion */
@@ -2846,14 +2822,16 @@
     }
 
     runBootLog([
-      "STAM_CONSOLE // BOOT",
-      "loading modules... ok",
-      "console ready."
-    ], finish);
+      "> INITIALIZING STAM_CONSOLE",
+      "> authenticating... GRANTED",
+      "> mounting modules... 12 OK",
+      "> render pipeline... ONLINE",
+      "> STATUS: READY"
+    ], finish, 750);
 
     loader.addEventListener("click", finish);
     window.addEventListener("keydown", finish, { once: true });
-    setTimeout(finish, 3200);
+    setTimeout(finish, 4200);
   })();
 
   /* scroll reveal */
@@ -3573,14 +3551,6 @@
     update();
   })();
 
-  /* tab title changes when you look away */
-  (function () {
-    var originalTitle = document.title;
-    document.addEventListener("visibilitychange", function () {
-      document.title = document.hidden ? "Come back? →" : originalTitle;
-    });
-  })();
-
   /* project cards flip on click (or Enter/Space when focused) to show a real fact */
   document.querySelectorAll(".project-card").forEach(function (card) {
     card.addEventListener("click", function (e) {
@@ -3679,7 +3649,7 @@
     runBootLog([message || "hey, you found it."], function () {
       loader.classList.add("is-hidden");
       setTimeout(function () { loader.style.display = "none"; }, 400);
-    });
+    }, 150);
   }
 
   /* easter egg: type "jarvis" anywhere on the page */

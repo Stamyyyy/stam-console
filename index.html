@@ -151,6 +151,14 @@
     }
   }
 
+  /* Without this, the browser renders native chrome (scrollbars, <select>
+     popups, checkbox/radio defaults, date pickers) in its own light theme
+     regardless of the page's own dark CSS -- the actual "default Google
+     white" showing through everywhere it wasn't explicitly restyled. */
+  :root { color-scheme: light dark; }
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+
   :root[data-theme="light"] {
     --bg: #f4f4f0;
     --surface: #eae8e3;
@@ -1630,6 +1638,18 @@
     transition: border-color 0.15s;
   }
   .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--hazard); }
+  /* Chrome/Edge paint autofilled fields with their own white background,
+     ignoring the site's CSS entirely -- this is the "default Google white"
+     patch: a huge inset box-shadow repaints over it in our own surface
+     color, and -webkit-text-fill-color overrides the forced text color. */
+  .form-input:-webkit-autofill,
+  .form-input:-webkit-autofill:hover,
+  .form-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--surface-2) inset;
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--text);
+    transition: background-color 5000s ease-in-out 0s;
+  }
   .form-textarea { resize: vertical; min-height: 120px; }
   .form-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }

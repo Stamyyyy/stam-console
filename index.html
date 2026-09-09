@@ -395,6 +395,17 @@
     /* deliberately NOT pointer-events:none -- the canvases inside still need
        pointermove for cursor reactivity. Only the decorative children below
        (corners/labels/scanline) opt out individually. */
+    /* Brushed-metal texture as a CSS floor underneath the WebGL canvases --
+       hard repeating bands, not a smooth gradient wash. Always renders, so a
+       device where WebGL silently fails (old GPU driver, battery saver,
+       reduced-motion) still shows a metal panel instead of going blank. */
+    background: repeating-linear-gradient(
+      135deg,
+      rgba(var(--metal-2-rgb), 0.5) 0px,
+      rgba(var(--metal-2-rgb), 0.5) 2px,
+      rgba(var(--metal-1-rgb), 0.5) 2px,
+      rgba(var(--metal-1-rgb), 0.5) 4px
+    );
   }
   :root[data-theme="dark"] .hero-viewport { border-color: rgba(var(--neon-1-rgb), 0.28); }
   @media (prefers-color-scheme: dark) {
@@ -1162,13 +1173,43 @@
 
   /* footer signature */
   footer {
+    position: relative;
     border-top: 1px solid var(--border);
     padding: 2rem clamp(1.25rem, 4vw, 3rem) clamp(4.5rem, 10vw, 5.5rem);
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
+    overflow: hidden;
+  }
+  /* subtler bookend of the hero's liquid-metal treatment -- same shader
+     instance, no HUD corner brackets/readout here, just the material. */
+  .footer-viewport {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: repeating-linear-gradient(
+      135deg,
+      rgba(var(--metal-2-rgb), 0.5) 0px,
+      rgba(var(--metal-2-rgb), 0.5) 2px,
+      rgba(var(--metal-1-rgb), 0.5) 2px,
+      rgba(var(--metal-1-rgb), 0.5) 4px
+    );
+  }
+  #footer-metal {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.1s ease;
+  }
+  #footer-metal.is-ready { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    #footer-metal { transition: none; }
   }
   .footer-top {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -1194,6 +1235,8 @@
     color: var(--text-faint);
   }
   .signature {
+    position: relative;
+    z-index: 1;
     border: 1px solid var(--border);
     border-radius: 0;
     background: #1e1e1e;
@@ -2257,6 +2300,9 @@
 </main>
 
 <footer>
+  <div class="footer-viewport" aria-hidden="true">
+    <canvas id="footer-metal"></canvas>
+  </div>
   <div class="footer-top">
     <div>
       <div class="footer-sig">Stam</div>
@@ -2776,10 +2822,10 @@
      pattern as the particle canvas below. Renders exactly one static frame
      under reduced motion, then stops -- no continuous animation. Fails
      silently (canvas stays at opacity:0) if WebGL is unavailable. */
-  (function () {
-    var canvas = document.getElementById("hero-metal");
-    var heroSection = document.querySelector(".hero");
-    var readout = document.getElementById("hero-metal-readout");
+  function initLiquidMetal(canvasId, containerSelector, readoutId) {
+    var canvas = document.getElementById(canvasId);
+    var heroSection = document.querySelector(containerSelector);
+    var readout = readoutId ? document.getElementById(readoutId) : null;
     if (!canvas || !heroSection) return;
 
     var gl = canvas.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: false, powerPreference: "low-power" }) ||
@@ -2958,12 +3004,13 @@
 
     var ro = new ResizeObserver(function () {
       resize();
-      if (reduceMotion) draw(0);
+      if (reduceMotion) { startTime = 0; draw(2400); }
     });
     ro.observe(canvas);
 
     if (reduceMotion) {
-      draw(0);
+      startTime = 0;
+      draw(2400);
       canvas.classList.add("is-ready");
       return;
     }
@@ -2996,7 +3043,10 @@
         raf = requestAnimationFrame(loop);
       }
     });
-  })();
+  }
+
+  initLiquidMetal("hero-metal", ".hero", "hero-metal-readout");
+  initLiquidMetal("footer-metal", "footer", null);
 
   /* hero particle network: drifting nodes that link when close, reacting to the cursor and to sound */
   (function () {

@@ -16,16 +16,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stam Console</title>
 <meta name="description" content="Stam — full-stack developer building Discord bots, web apps and databases, and desktop applications. Open for new projects.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0b'/%3E%3Cpath d='M14 20 L30 32 L14 44' stroke='%232fd98f' stroke-width='7' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Crect x='36' y='38' width='16' height='7' rx='2' fill='%232fd98f'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23090b0f'/%3E%3Crect x='2' y='2' width='60' height='60' fill='none' stroke='%2300f0ff' stroke-width='2'/%3E%3Cpath d='M16 18 L34 32 L16 46' stroke='%2300f0ff' stroke-width='8' stroke-linecap='square' stroke-linejoin='miter' fill='none'/%3E%3Crect x='40' y='38' width='16' height='7' fill='%2300f0ff'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Stam — Full-stack developer">
 <meta property="og:description" content="Discord bots, desktop apps, web apps, and the databases behind them. I can make them all.">
 <meta property="og:url" content="https://stam-console.web.app/">
-<meta property="og:image" content="https://stam-console.web.app/assets/og-image-v2.png">
+<meta property="og:image" content="https://stam-console.web.app/assets/og-image-v3.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v2.png">
+<meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v3.png">
 <link rel="canonical" href="https://stam-console.web.app/">
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -91,13 +91,6 @@
     font-display: swap;
     src: url("assets/fonts/jetbrains-mono-700.woff2") format("woff2");
   }
-  /*
-    Brutalist archetypes (industrial-brutalist-ui): dark = Tactical Telemetry
-    (CRT terminal), light = Swiss Industrial Print (blueprint/newsprint).
-    The existing theme toggle already ensures only one renders at a time,
-    which is exactly the skill's "pick one substrate, never mix" rule.
-    Hazard red is the one accent shared by both archetypes.
-  */
   :root {
     --bg: #090b0f;
     --surface: #090b0f;
@@ -111,19 +104,10 @@
     --hazard-rgb: 0, 240, 255;
     --live: #4af626;
     --live-rgb: 74, 246, 38;
-    /* CRT phosphor emission -- Tactical Telemetry only. Never appears in the
-       Swiss Industrial Print substrate; light-theme blocks below pin these
-       back to --hazard so nothing neon can leak through if a rule forgets
-       to scope itself to [data-theme="dark"]. */
     --neon-1: #00f0ff;
     --neon-1-rgb: 0, 240, 255;
     --neon-2: #ff2ad4;
     --neon-2-rgb: 255, 42, 212;
-    /* liquid-metal ramp for the hero shader. Dark theme = near-black gunmetal
-       (screen-like, matches Tactical Telemetry). Light theme MUST stay in the
-       same lightness band as --surface/--surface-2 (already WCAG-verified
-       against --text) -- brushed aluminum, not gunmetal -- or dark hero copy
-       rendered on top of it loses contrast. Never darken these in light mode. */
     --metal-1-rgb: 5, 6, 8;
     --metal-2-rgb: 61, 67, 75;
   }
@@ -151,10 +135,6 @@
     }
   }
 
-  /* Without this, the browser renders native chrome (scrollbars, <select>
-     popups, checkbox/radio defaults, date pickers) in its own light theme
-     regardless of the page's own dark CSS -- the actual "default Google
-     white" showing through everywhere it wasn't explicitly restyled. */
   :root { color-scheme: light dark; }
   :root[data-theme="light"] { color-scheme: light; }
   :root[data-theme="dark"] { color-scheme: dark; }
@@ -224,8 +204,6 @@
     font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   }
 
-  /* was a cursive signature font -- no place for script in this archetype;
-     signature-styled bits now render as bracketed ASCII annotations instead */
   .signature-font {
     font-family: "JetBrains Mono", monospace;
   }
@@ -272,7 +250,6 @@
     100% { box-shadow: 0 0 0 0 rgba(var(--live-rgb), 0); }
   }
 
-  /* nav */
   .nav {
     position: sticky;
     top: 0;
@@ -382,7 +359,6 @@
 
   main { display: flex; flex-direction: column; }
 
-  /* hero */
   .hero {
     position: relative;
     padding: clamp(4.5rem, 13vw, 8.5rem) clamp(1.25rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
@@ -391,22 +367,12 @@
     width: 100%;
     overflow: hidden;
   }
-  /* instrument-panel frame around the background layers: contains the liquid
-     metal instead of letting it bleed like a soft SaaS gradient. Corner
-     brackets + a status readout read as a HUD viewport, not decoration. */
   .hero-viewport {
     position: absolute;
     inset: clamp(0.65rem, 2vw, 1.35rem);
     z-index: 0;
     border: 1px solid var(--border);
     overflow: hidden;
-    /* deliberately NOT pointer-events:none -- the canvases inside still need
-       pointermove for cursor reactivity. Only the decorative children below
-       (corners/labels/scanline) opt out individually. */
-    /* Brushed-metal texture as a CSS floor underneath the WebGL canvases --
-       hard repeating bands, not a smooth gradient wash. Always renders, so a
-       device where WebGL silently fails (old GPU driver, battery saver,
-       reduced-motion) still shows a metal panel instead of going blank. */
     background: repeating-linear-gradient(
       135deg,
       rgba(var(--metal-2-rgb), 0.5) 0px,
@@ -489,9 +455,6 @@
     text-transform: uppercase;
     margin-top: 0.9rem;
   }
-  /* one-shot chromatic-aberration settle on load, fired by JS via .is-glitching.
-     Colors resolve through --neon-1/--neon-2, which collapse to --hazard in
-     the light substrate, so this is the same rule in both themes. */
   .hero-name.is-glitching {
     animation: heroGlitchSettle 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
@@ -569,7 +532,6 @@
     padding: 0.55rem 1rem;
   }
 
-  /* project pill row */
   .pill-row {
     display: flex;
     flex-wrap: wrap;
@@ -589,7 +551,6 @@
     background: color-mix(in srgb, var(--bg) 70%, transparent);
   }
 
-  /* panels */
   .panel {
     padding: clamp(2.75rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
     max-width: 900px;
@@ -621,7 +582,6 @@
   }
   .reveal.is-visible { opacity: 1; transform: none; }
 
-  /* staggered children: fade in one after another once the ancestor .reveal is visible */
   .stagger > * {
     opacity: 0;
     transform: translateY(10px);
@@ -630,7 +590,6 @@
   }
   .reveal.is-visible .stagger > * { opacity: 1; transform: none; }
 
-  /* hero headline, word by word */
   .word {
     display: inline-block;
     opacity: 0;
@@ -640,7 +599,6 @@
   }
   .word.is-in { opacity: 1; transform: none; }
 
-  /* typewriter cursor */
   .type-cursor {
     display: inline-block;
     width: 2px;
@@ -651,7 +609,6 @@
   .type-cursor.is-done { display: none; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* boot loader */
   #loader {
     position: fixed;
     inset: 0;
@@ -694,18 +651,18 @@
   }
   .loader-logo-chevron {
     fill: none;
-    stroke: #2fd98f;
-    stroke-width: 7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 44;
-    stroke-dashoffset: 44;
+    stroke: var(--hazard);
+    stroke-width: 8;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
     animation: loaderDraw 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
   }
   .loader-logo-bar {
-    fill: #2fd98f;
+    fill: var(--hazard);
     opacity: 0;
-    transform-origin: 44px 41.5px;
+    transform-origin: 48px 41.5px;
     transform: scaleX(0);
     animation: loaderBarIn 0.2s ease 1.05s forwards;
   }
@@ -743,7 +700,6 @@
     .loader-logo-frame, .loader-logo-chevron, .loader-logo-bar, .loader-logo.is-glitching { animation: none; opacity: 1; stroke-dashoffset: 0; transform: none; filter: none; }
   }
 
-  /* about */
   .about-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -771,7 +727,6 @@
   }
   .fact-row .mono { color: var(--text-faint); }
 
-  /* how I work */
   .steps {
     list-style: none;
     margin: 0;
@@ -806,7 +761,6 @@
     color: var(--text-dim);
   }
 
-  /* offer / capabilities */
   .offer-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -847,7 +801,6 @@
     font-size: 0.92rem;
   }
 
-  /* filters */
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -874,7 +827,6 @@
     border-color: var(--text);
   }
 
-  /* projects */
   .projects { display: flex; flex-direction: column; gap: 1.25rem; }
   .projects-collapse {
     position: relative;
@@ -1094,7 +1046,6 @@
   }
   .project-footer { display: flex; gap: 0.75rem; }
 
-  /* skills */
   .stack-groups {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1145,11 +1096,6 @@
   .chip:hover, .chip:focus, .chip:focus-visible { border-color: var(--text-dim); outline: none; }
   .chip:focus-visible { border-color: var(--hazard); }
 
-  /* skill-chip tooltip: a small chatbox-style popover, not a native title
-     attribute -- carries a real description plus an inline link. Shown on
-     hover AND focus/focus-within so the link inside is keyboard-reachable:
-     tabbing from the chip moves focus onto the link without ever leaving
-     this subtree, so focus-within stays true the whole time. */
   .chip-tip {
     position: absolute;
     bottom: calc(100% + 10px);
@@ -1197,11 +1143,6 @@
     .chip-tip { transition: none; }
   }
   @media (max-width: 760px) {
-    /* Floating popovers are fragile on narrow screens -- centering under a
-       chip near the viewport edge still overflows even with a width cap.
-       Below the site's own mobile breakpoint the tip becomes an inline
-       expansion instead: it grows the chip's own box downward, so it can
-       never exceed the viewport regardless of where the chip sits. */
     .chip { display: inline-flex; flex-direction: column; align-items: flex-start; }
     .chip-tip {
       position: static;
@@ -1234,7 +1175,6 @@
     }
   }
 
-  /* reviews */
   .reviews-empty {
     border: 1px dashed var(--border);
     border-radius: 0;
@@ -1247,7 +1187,6 @@
   }
   .reviews-empty p { color: var(--text-dim); margin: 0; }
 
-  /* contact */
   .contact-panel .panel-sub { margin-bottom: 0; }
   .contact-grid {
     display: grid;
@@ -1269,7 +1208,6 @@
     font-weight: 600;
     word-break: break-word;
   }
-  /* sound control */
   .sound-widget {
     position: fixed;
     right: clamp(1rem, 3vw, 1.75rem);
@@ -1306,7 +1244,6 @@
   .sound-btn:hover { color: var(--text); }
   .sound-btn.is-active { background: var(--text); color: var(--bg); }
 
-  /* footer signature */
   footer {
     position: relative;
     border-top: 1px solid var(--border);
@@ -1316,8 +1253,6 @@
     width: 100%;
     overflow: hidden;
   }
-  /* subtler bookend of the hero's liquid-metal treatment -- same shader
-     instance, no HUD corner brackets/readout here, just the material. */
   .footer-viewport {
     position: absolute;
     inset: 0;
@@ -1342,33 +1277,58 @@
   @media (prefers-reduced-motion: reduce) {
     #footer-metal { transition: none; }
   }
-  .footer-top {
+  .footer-statement {
+    position: relative;
+    z-index: 1;
+    padding: 1rem 0 2.5rem;
+  }
+  .footer-sig {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.1rem;
+    color: var(--text-faint);
+    transform: rotate(-2deg);
+    margin-bottom: 0.6rem;
+  }
+  .footer-headline {
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-size: clamp(1.9rem, 6vw, 3.4rem);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin: 0;
+    max-width: 14ch;
+  }
+  .footer-bottom {
     position: relative;
     z-index: 1;
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-  }
-  .footer-sig {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 2.1rem;
-    line-height: 1;
-    color: var(--text);
-    transform: rotate(-2deg);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
   .footer-caption {
     font-family: "JetBrains Mono", monospace;
     font-size: 0.72rem;
     letter-spacing: 0.04em;
     color: var(--text-faint);
-    margin-top: 0.35rem;
   }
-  .footer-tagline {
-    font-size: 0.85rem;
+  .footer-top-btn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
     color: var(--text-faint);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 0.45rem 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
   }
+  .footer-top-btn:hover { border-color: var(--hazard); color: var(--hazard); }
   .signature {
     position: relative;
     z-index: 1;
@@ -1413,7 +1373,6 @@
   .tok-num { color: #b5cea8; }
   #sig-output { color: #4ec9b0; }
 
-  /* scroll progress */
   #scroll-progress {
     position: fixed;
     top: 0;
@@ -1424,7 +1383,6 @@
     z-index: 25;
   }
 
-  /* keyboard hint */
   .kbd-hint {
     position: fixed;
     left: clamp(1rem, 3vw, 1.75rem);
@@ -1450,7 +1408,6 @@
     background: var(--surface-2);
   }
 
-  /* command palette */
   .cmdk-scrim {
     position: fixed;
     inset: 0;
@@ -1502,8 +1459,7 @@
   }
   .cmdk-empty { padding: 1.25rem; color: var(--text-faint); font-size: 0.88rem; }
 
-  /* terms modal */
-  .footer-right { display: flex; align-items: center; gap: 1rem; }
+  .footer-links { display: flex; align-items: center; gap: 1rem; }
   .footer-terms-btn {
     font-family: inherit;
     font-size: 0.85rem;
@@ -1599,7 +1555,6 @@
   }
   .terms-sublist li { color: var(--text-dim); font-size: 0.92rem; padding-left: 0.3rem; }
 
-  /* contact form modal (shares .terms-scrim/.terms-panel chrome) */
   .contact-form { display: flex; flex-direction: column; gap: 1.1rem; }
   .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
   .form-label {
@@ -1620,10 +1575,6 @@
     transition: border-color 0.15s;
   }
   .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--hazard); }
-  /* Chrome/Edge paint autofilled fields with their own white background,
-     ignoring the site's CSS entirely -- this is the "default Google white"
-     patch: a huge inset box-shadow repaints over it in our own surface
-     color, and -webkit-text-fill-color overrides the forced text color. */
   .form-input:-webkit-autofill,
   .form-input:-webkit-autofill:hover,
   .form-input:-webkit-autofill:focus {
@@ -1644,7 +1595,6 @@
   .form-status[data-state="ok"] { color: var(--live); }
   .form-status[data-state="error"] { color: var(--hazard); }
 
-  /* project card flip */
   .card-back {
     position: absolute;
     inset: 0;
@@ -1685,7 +1635,6 @@
   .project-card { cursor: pointer; }
   .project-card a, .project-card button { cursor: pointer; }
 
-  /* now / availability status */
   .now-status {
     display: flex;
     flex-direction: column;
@@ -1701,7 +1650,6 @@
     color: var(--text-dim);
   }
 
-  /* film grain */
   .grain {
     position: fixed;
     inset: 0;
@@ -1712,7 +1660,6 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 
-  /* faq */
   .faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
   .faq-item {
     border: 1px solid var(--border);
@@ -1743,7 +1690,6 @@
   .faq-item[open] summary::after { transform: rotate(45deg); }
   .faq-answer { margin: 0; padding: 0 1.25rem 1.1rem; color: var(--text-dim); font-size: 0.92rem; max-width: 60ch; }
 
-  /* changelog */
   .changelog-line {
     font-family: "JetBrains Mono", monospace;
     font-size: 0.75rem;
@@ -1806,9 +1752,9 @@
 <div id="loader" role="presentation">
   <div class="loader-inner">
     <svg class="loader-logo" id="loader-logo" viewBox="0 0 64 64" width="76" height="76" aria-hidden="true">
-      <rect class="loader-logo-frame" x="1.5" y="1.5" width="61" height="61" rx="13" />
-      <path class="loader-logo-chevron" d="M14 20 L30 32 L14 44" />
-      <rect class="loader-logo-bar" x="36" y="38" width="16" height="7" rx="2" />
+      <rect class="loader-logo-frame" x="1.5" y="1.5" width="61" height="61" />
+      <path class="loader-logo-chevron" d="M16 18 L34 32 L16 46" />
+      <rect class="loader-logo-bar" x="40" y="38" width="16" height="7" />
     </svg>
     <div class="loader-log mono" id="loader-log"></div>
   </div>
@@ -1973,7 +1919,7 @@
   <section id="work" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">Some of what that's looked like.</h2>
-      <p class="panel-sub">All coded solo. One was commissioned, seven are mine.</p>
+      <p class="panel-sub">All coded solo. All mine.</p>
       <p class="changelog-line">Last shipped: Revenant, an Explorer replacement with instant whole-drive search, Sep 2026.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter work by type">
@@ -1981,7 +1927,6 @@
       <button class="filter-btn" data-filter="web" type="button">Web app</button>
       <button class="filter-btn" data-filter="bot" type="button">Discord bot</button>
       <button class="filter-btn" data-filter="electron" type="button">Electron</button>
-      <button class="filter-btn" data-filter="luau" type="button">Luau</button>
     </div>
     <div class="projects stagger" id="projects-grid">
       <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="JARVIS Boot Intro card — press Enter for a fact">
@@ -2203,50 +2148,6 @@
             </div>
           </div>
 
-          <div class="project-card" data-category="web" tabindex="0" role="button" aria-label="Divisional Records Database card — press Enter for a fact">
-            <div class="project-content">
-              <div class="project-top">
-                <div>
-                  <span class="project-title">Divisional Records Database</span>
-                  <div class="project-subtitle">Branded &amp; themed as &quot;Imperial Intelligence&quot;</div>
-                </div>
-                <span class="project-status is-live"><span class="live-dot" aria-hidden="true"></span>Live</span>
-              </div>
-              <p class="project-desc">A logistics and records-keeping database, commissioned for a client's community project. The client branded it as a Star Wars themed intelligence archive, but functionally it's a structured platform for personnel data, organizational hierarchy, and access-controlled records.</p>
-              <p class="project-desc">Built to hold up under ongoing use, not just look good in a demo, with the data structure designed around how that community actually works day to day.</p>
-              <div class="meta-row">
-                <div>
-                  <div class="meta-label">Role</div>
-                  <div>Commissioned developer</div>
-                </div>
-                <div>
-                  <div class="meta-label">Stack</div>
-                  <div>JavaScript, cloud database</div>
-                </div>
-              </div>
-              <div class="tag-row">
-                <span class="tag">JavaScript</span>
-                <span class="tag">Data modeling</span>
-                <span class="tag">Access control</span>
-              </div>
-              <div class="project-footer">
-                <a class="btn btn-small" href="https://imperial-intelligence.web.app/" target="_blank" rel="noopener">Visit site</a>
-              </div>
-            </div>
-            <div class="project-media pattern-a" id="media-imperial">
-              <video class="project-video" id="video-imperial" muted loop playsinline preload="metadata" poster="videos/imperial-poster.jpg">
-                <source src="videos/imperial.mp4" type="video/mp4">
-              </video>
-            </div>
-            <span class="flip-hint">Click for a fact</span>
-            <div class="card-back">
-              <div>
-                <div class="card-back-label">Fun fact</div>
-                <p>It manages records for a community of about 2,000 people without ever going down.</p>
-              </div>
-            </div>
-          </div>
-
           <div class="project-card" data-category="web bot" tabindex="0" role="button" aria-label="Frontline: Shattered Steel card — press Enter for a fact">
             <div class="project-content">
               <div class="project-top">
@@ -2289,49 +2190,6 @@
             </div>
           </div>
 
-          <div class="project-card" data-category="luau" tabindex="0" role="button" aria-label="Poltergeist card — press Enter for a fact">
-            <div class="project-content">
-              <div class="project-top">
-                <div>
-                  <span class="project-title">Poltergeist</span>
-                  <div class="project-subtitle">Advisory presence/claim plugin for Roblox Team Create</div>
-                </div>
-                <span class="project-status">Studio plugin</span>
-              </div>
-              <p class="project-desc">Studio already shows live collaborator cursors on open scripts in Team Create, but everything else, models, UI, Terrain, whole Workspace subtrees, has no presence indicator at all. Poltergeist claims those: pick something, claim it, and every other collaborator sees it's spoken for before they start editing the same thing.</p>
-              <p class="project-desc">Claims live entirely inside the shared DataModel itself rather than an external service, a Folder with Archivable set false, so it replicates live to every Team Create session but never ships into the published place. A heartbeat keeps a claim alive; 15 seconds of silence marks it abandoned so a crashed collaborator can't lock something forever.</p>
-              <div class="meta-row">
-                <div>
-                  <div class="meta-label">Role</div>
-                  <div>Solo developer</div>
-                </div>
-                <div>
-                  <div class="meta-label">Stack</div>
-                  <div>Luau, Roblox Studio plugin APIs</div>
-                </div>
-              </div>
-              <div class="tag-row">
-                <span class="tag">Luau</span>
-                <span class="tag">Roblox Studio</span>
-                <span class="tag">Team Create</span>
-              </div>
-              <div class="project-footer">
-                <a class="btn btn-small" href="https://github.com/Stamyyyy/poltergeist" target="_blank" rel="noopener">View code</a>
-              </div>
-            </div>
-            <div class="project-media pattern-c" id="media-poltergeist">
-              <video class="project-video" id="video-poltergeist" muted loop playsinline preload="metadata" poster="videos/poltergeist-poster.jpg">
-                <source src="videos/poltergeist.mp4" type="video/mp4">
-              </video>
-            </div>
-            <span class="flip-hint">Click for a fact</span>
-            <div class="card-back">
-              <div>
-                <div class="card-back-label">Fun fact</div>
-                <p>There's no vote when two people claim the same thing at once, whichever write physically lands first in the shared DataModel just keeps it, and the loser finds out and backs off on its very next heartbeat, a few seconds later.</p>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="projects-fade" aria-hidden="true"></div>
       </div>
@@ -2451,16 +2309,17 @@
   <div class="footer-viewport" aria-hidden="true">
     <canvas id="footer-metal"></canvas>
   </div>
-  <div class="footer-top">
-    <div>
-      <div class="footer-sig">Stam</div>
-      <div class="footer-caption">&copy; 2026</div>
-    </div>
-    <div class="footer-right">
+  <div class="footer-statement">
+    <span class="footer-sig">Stam</span>
+    <h2 class="footer-headline">Building things that ship.</h2>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-caption">&copy; 2026</div>
+    <div class="footer-links">
       <button class="footer-terms-btn" type="button" data-open-terms>Terms</button>
       <button class="footer-terms-btn" type="button" data-open-privacy>Privacy</button>
-      <span class="footer-tagline">Building things that ship.</span>
     </div>
+    <button class="footer-top-btn" type="button" id="footer-top-btn">&uarr; TOP</button>
   </div>
   <div class="signature">
     <div class="sig-titlebar">
@@ -2666,8 +2525,6 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.__stamAudio = { level: 0, active: false };
 
-  /* block copy/cut/right-click everywhere except the contact section (email/discord/github values)
-     and the contact form modal, where visitors need normal copy/paste/right-click in the fields */
   function outsideContact(e) {
     return !e.target.closest(".contact-grid") && !e.target.closest("#contact-form-scrim");
   }
@@ -2677,7 +2534,6 @@
     });
   });
 
-  /* project demo videos: only decode/play once a card is actually on screen, pause again once it scrolls off */
   var projectVideos = document.querySelectorAll(".project-video");
   if (reduceMotion) {
     projectVideos.forEach(function (video) {
@@ -2700,14 +2556,12 @@
     projectVideos.forEach(function (video) { video.play().catch(function () {}); });
   }
 
-  /* index staggered children so they fade in one after another */
   document.querySelectorAll(".stagger").forEach(function (group) {
     Array.prototype.forEach.call(group.children, function (child, idx) {
       child.style.setProperty("--stagger-i", idx);
     });
   });
 
-  /* hero entrance: words, typed line, then the fact paragraph. Runs once the loader clears. */
   function startHeroIntro() {
     var headline = document.getElementById("hero-headline");
     if (headline && !reduceMotion) {
@@ -2756,11 +2610,6 @@
     }, 350);
   }
 
-  /* Runs the multi-line typewriter boot log into #loader-log, one line at a
-     time (append-and-keep, like a real terminal), then flashes a
-     chromatic-aberration glitch on the logo mark before calling onDone.
-     Shared by the first-visit boot sequence and the "jarvis" easter egg
-     replay below, so there's exactly one boot-sequence implementation. */
   function runBootLog(lines, onDone, startDelay) {
     var logo = document.getElementById("loader-logo");
     var log = document.getElementById("loader-log");
@@ -2796,7 +2645,6 @@
     setTimeout(typeLine, startDelay || 0);
   }
 
-  /* boot loader: brief on first visit this session, skippable, gone under reduced motion */
   (function () {
     var loader = document.getElementById("loader");
     if (!loader) { startHeroIntro(); return; }
@@ -2834,7 +2682,6 @@
     setTimeout(finish, 4200);
   })();
 
-  /* scroll reveal */
   var revealEls = document.querySelectorAll(".reveal");
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealEls.forEach(function (el) { el.classList.add("is-visible"); });
@@ -2850,7 +2697,6 @@
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
-  /* card spotlight, follows the cursor */
   if (!reduceMotion) {
     document.querySelectorAll(".project-card, .offer-card, .skill-group").forEach(function (card) {
       card.addEventListener("pointermove", function (e) {
@@ -2861,7 +2707,6 @@
     });
   }
 
-  /* theme toggle */
   (function () {
     var root = document.documentElement;
     var btn = document.getElementById("theme-toggle");
@@ -2898,7 +2743,6 @@
     }
   })();
 
-  /* mobile nav drawer */
   (function () {
     var burger = document.getElementById("nav-burger");
     var links = document.getElementById("nav-links");
@@ -2940,7 +2784,6 @@
     });
   })();
 
-  /* show more projects */
   var moreBtn = document.getElementById("projects-more-btn");
   var projectsCollapse = document.getElementById("projects-collapse");
   var moreWrap = moreBtn ? moreBtn.closest(".projects-more-wrap") : null;
@@ -2952,7 +2795,6 @@
   }
   if (moreBtn) moreBtn.addEventListener("click", expandProjects);
 
-  /* project filters */
   var filterBtns = document.querySelectorAll(".filter-btn");
   var cards = document.querySelectorAll(".project-card");
   filterBtns.forEach(function (btn) {
@@ -2969,7 +2811,6 @@
     });
   });
 
-  /* copy discord username */
   var copyBtn = document.getElementById("copy-discord");
   if (copyBtn) {
     copyBtn.addEventListener("click", function () {
@@ -2985,7 +2826,13 @@
     });
   }
 
-  /* footer readout: the real pointer coordinates used for the card spotlight */
+  var footerTopBtn = document.getElementById("footer-top-btn");
+  if (footerTopBtn) {
+    footerTopBtn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  }
+
   var sigOutput = document.getElementById("sig-output");
   if (sigOutput && !reduceMotion) {
     var lastPointerUpdate = 0;
@@ -2997,15 +2844,6 @@
     });
   }
 
-  /* hero liquid metal: hand-rolled WebGL1 fragment shader, domain-warped fbm
-     driving a fresnel-lit metal ramp. No library -- consistent with the rest
-     of this page's "own the whole build" engineering, and no CDN dependency
-     risk on a hiring portfolio. Cursor-reactive (dents the flow field),
-     audio-reactive (shares window.__stamAudio.level with the particle net),
-     gated by the same reduceMotion/IntersectionObserver/ResizeObserver
-     pattern as the particle canvas below. Renders exactly one static frame
-     under reduced motion, then stops -- no continuous animation. Fails
-     silently (canvas stays at opacity:0) if WebGL is unavailable. */
   function initLiquidMetal(canvasId, containerSelector, readoutId) {
     var canvas = document.getElementById(canvasId);
     var heroSection = document.querySelector(containerSelector);
@@ -3115,9 +2953,6 @@
       return parts.length === 3 && !parts.some(isNaN) ? parts : fallback;
     }
 
-    /* Base ramp is theme-aware, not just the highlight: dark theme = gunmetal,
-       light theme = brushed aluminum in the same lightness band as
-       --surface/--surface-2 so dark hero copy stays legible on top of it. */
     function applyThemeColors() {
       var base1 = rgbVar("--metal-1-rgb", [0.02, 0.023, 0.03]);
       var base2 = rgbVar("--metal-2-rgb", [0.24, 0.26, 0.29]);
@@ -3232,7 +3067,6 @@
   initLiquidMetal("hero-metal", ".hero", "hero-metal-readout");
   initLiquidMetal("footer-metal", "footer", null);
 
-  /* hero particle network: drifting nodes that link when close, reacting to the cursor and to sound */
   (function () {
     var canvas = document.getElementById("hero-grid");
     if (!canvas) return;
@@ -3357,7 +3191,6 @@
     }
   })();
 
-  /* background sound, synthesized, off by default */
   (function () {
     var audioCtx = null;
     var masterGain = null;
@@ -3414,7 +3247,6 @@
       ensureCtx();
       stopAll();
 
-      /* a slow, moody piano-style arpeggio: i - VI - III - VII in A minor */
       var chords = [
         [220.00, 261.63, 329.63],
         [174.61, 220.00, 261.63],
@@ -3536,7 +3368,6 @@
     });
   })();
 
-  /* scroll progress bar */
   (function () {
     var bar = document.getElementById("scroll-progress");
     if (!bar) return;
@@ -3551,7 +3382,6 @@
     update();
   })();
 
-  /* project cards flip on click (or Enter/Space when focused) to show a real fact */
   document.querySelectorAll(".project-card").forEach(function (card) {
     card.addEventListener("click", function (e) {
       if (e.target.closest("a, button")) return;
@@ -3566,10 +3396,6 @@
     });
   });
 
-  /* project card videos are cropped (object-fit: cover) to fit the card, so give each one a way
-     to open the full, uncropped clip in a lightbox with native controls (incl. the browser's own
-     fullscreen button, which works everywhere, unlike PiP). Built as a <button> so the existing
-     card-flip handler above ignores it (it already skips clicks on "a, button"). */
   (function () {
     var mediaBlocks = document.querySelectorAll(".project-media");
     if (!mediaBlocks.length) return;
@@ -3639,7 +3465,6 @@
     });
   })();
 
-  /* full-screen message flash, reuses the boot loader overlay + runBootLog */
   function replayBoot(message) {
     if (reduceMotion) return;
     var loader = document.getElementById("loader");
@@ -3652,7 +3477,6 @@
     }, 150);
   }
 
-  /* easter egg: type "jarvis" anywhere on the page */
   (function () {
     var buffer = "";
     window.addEventListener("keydown", function (e) {
@@ -3668,7 +3492,6 @@
     });
   })();
 
-  /* terms modal */
   (function () {
     var triggers = document.querySelectorAll("[data-open-terms]");
     var scrim = document.getElementById("terms-scrim");
@@ -3694,7 +3517,6 @@
     });
   })();
 
-  /* privacy modal (same chrome/pattern as the terms modal above) */
   (function () {
     var triggers = document.querySelectorAll("[data-open-privacy]");
     var scrim = document.getElementById("privacy-scrim");
@@ -3720,7 +3542,6 @@
     });
   })();
 
-  /* contact form modal */
   (function () {
     var triggers = document.querySelectorAll("[data-open-contact-form]");
     var scrim = document.getElementById("contact-form-scrim");
@@ -3801,7 +3622,6 @@
     });
   })();
 
-  /* command palette */
   (function () {
     var scrim = document.getElementById("cmdk-scrim");
     var input = document.getElementById("cmdk-input");
@@ -3839,7 +3659,6 @@
       { label: "Play calm sound", hint: "Audio", action: function () { clickSoundBtn("calm"); } },
       { label: "Play energetic sound", hint: "Audio", action: function () { clickSoundBtn("energetic"); } },
       { label: "Turn sound off", hint: "Audio", action: function () { clickSoundBtn("off"); } },
-      { label: "Visit Divisional Records Database", hint: "External", action: function () { window.open("https://imperial-intelligence.web.app/", "_blank", "noopener"); } },
       { label: "Visit Frontline: Shattered Steel", hint: "External", action: function () { window.open("https://frontline-shattered-steel.web.app/", "_blank", "noopener"); } }
     ];
 

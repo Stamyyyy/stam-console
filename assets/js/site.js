@@ -416,11 +416,11 @@
       "    land *= 1.0 - smoothstep(0.04, 0.6, dissolve * (0.72 + edge * 0.85));\n" +
       "    land *= smoothstep(0.0, 0.10, uv.y);\n" +
       "    float coast = smoothstep(0.04, 0.5, land) * (1.0 - smoothstep(0.5, 0.96, land));\n" +
-      "    vec3 landCol = uBase2 * 1.7 + hiMix * 0.42;\n" +
+      "    vec3 landCol = uBase2 * 1.45 + hiMix * 0.36;\n" +
       "    col = mix(col, landCol, land);\n" +
-      "    col += hiMix * coast * 1.2;\n" +
-      "    float shimmer = land * pow(max(band, 0.0), 1.4) * 0.75;\n" +
-      "    alpha = land * 0.52 + shimmer + coast * 0.4;\n" +
+      "    col += hiMix * coast * 1.0;\n" +
+      "    float shimmer = land * pow(max(band, 0.0), 1.4) * 0.6;\n" +
+      "    alpha = land * 0.44 + shimmer + coast * 0.3;\n" +
       "  }\n" +
       "  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.9));\n" +
       "}";

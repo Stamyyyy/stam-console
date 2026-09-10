@@ -1722,38 +1722,73 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background:
-      repeating-linear-gradient(0deg, rgba(var(--hazard-rgb), 0.085) 0 1px, transparent 1px 44px),
-      repeating-linear-gradient(90deg, rgba(var(--hazard-rgb), 0.085) 0 1px, transparent 1px 44px);
-    mask-image: radial-gradient(ellipse 78% 70% at 50% 50%, black 20%, transparent 82%);
-    -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 50%, black 20%, transparent 82%);
+    background: repeating-linear-gradient(
+      118deg,
+      transparent 0 22px,
+      rgba(var(--hazard-rgb), 0.035) 22px 23px
+    );
+    mask-image: radial-gradient(ellipse 70% 62% at 42% 50%, black 18%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 62% at 42% 50%, black 18%, transparent 78%);
   }
-  .how-viewport::before {
+  #how .panel-head, #how .steps, #how .response-time { position: relative; z-index: 1; }
+
+  .steps { position: relative; }
+  .steps::before {
     content: "";
     position: absolute;
-    left: 0; right: 0; height: 140px;
-    background: linear-gradient(180deg, transparent, rgba(var(--hazard-rgb), 0.14), transparent);
-    animation: howSweep 7s linear infinite;
+    left: calc(1ch + 1px);
+    top: 0.9rem;
+    bottom: 0.9rem;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--border) 12%, var(--border) 88%, transparent);
   }
-  @keyframes howSweep {
-    0% { top: -140px; }
-    100% { top: 100%; }
+  .steps::after {
+    content: "";
+    position: absolute;
+    left: calc(1ch - 1px);
+    top: 0;
+    width: 5px;
+    height: 84px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, transparent, var(--neon-1), var(--neon-2), transparent);
+    filter: blur(1px);
+    animation: howPulse 5.5s ease-in-out infinite;
   }
-  .how-cross {
-    position: absolute; width: 16px; height: 16px;
+  @keyframes howPulse {
+    0%   { top: -84px; opacity: 0; }
+    14%  { opacity: 0.9; }
+    86%  { opacity: 0.9; }
+    100% { top: 100%; opacity: 0; }
   }
-  .how-cross::before, .how-cross::after {
-    content: ""; position: absolute; background: rgba(var(--hazard-rgb), 0.5);
+
+  .step { position: relative; }
+  .step-num {
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
+    transition: color 0.25s ease;
   }
-  .how-cross::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
-  .how-cross::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
-  .how-cross[data-pos="tl"] { top: 26px; left: 26px; }
-  .how-cross[data-pos="tr"] { top: 26px; right: 26px; }
-  .how-cross[data-pos="bl"] { bottom: 26px; left: 26px; }
-  .how-cross[data-pos="br"] { bottom: 26px; right: 26px; }
-  #how .panel-head, #how .steps { position: relative; z-index: 1; }
+  .step::before {
+    content: "";
+    position: absolute;
+    left: calc(1ch - 2px);
+    top: 0.55rem;
+    width: 7px;
+    height: 7px;
+    background: var(--border);
+    transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .step:hover::before {
+    background: var(--neon-1);
+    box-shadow: 0 0 12px rgba(var(--neon-1-rgb), 0.85);
+    transform: scale(1.35);
+  }
+  .step:hover .step-num { color: var(--neon-1); }
+  .step:hover .step-title { color: var(--neon-1); }
+  .step-title { transition: color 0.25s ease; }
+
   @media (prefers-reduced-motion: reduce) {
-    .how-viewport::before { animation: none; display: none; }
+    .steps::after { animation: none; opacity: 0; }
   }
 
   @keyframes holoFlow {

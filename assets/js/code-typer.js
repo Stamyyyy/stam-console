@@ -71,13 +71,16 @@
 
     function typeSnippet(onDone) {
       var snippet = snippets[snippetIndex];
-      var done = [];
       var lineIndex = 0;
 
-      function paint(partialLine) {
-        var body = done.concat(partialLine == null ? [] : [partialLine]);
-        el.innerHTML = body.map(highlight).join("\n") + '<span class="tok-cursor"></span>';
-      }
+      el.textContent = "";
+      var doneEl = document.createElement("span");
+      var liveEl = document.createTextNode("");
+      var cursorEl = document.createElement("span");
+      cursorEl.className = "tok-cursor";
+      el.appendChild(doneEl);
+      el.appendChild(liveEl);
+      el.appendChild(cursorEl);
 
       function typeLine() {
         if (destroyed) return;
@@ -93,10 +96,11 @@
             timer = setTimeout(step, 200);
             return;
           }
-          paint(line.slice(0, charIndex));
+          liveEl.nodeValue = line.slice(0, charIndex);
           charIndex += 1;
           if (charIndex > line.length) {
-            done.push(line);
+            doneEl.insertAdjacentHTML("beforeend", highlight(line) + "\n");
+            liveEl.nodeValue = "";
             lineIndex += 1;
             timer = setTimeout(typeLine, lineDelay);
             return;

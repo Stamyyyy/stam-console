@@ -329,6 +329,9 @@
     var readout = readoutId ? document.getElementById(readoutId) : null;
     if (!canvas || !heroSection) return;
 
+    var lowPower = (window.matchMedia && window.matchMedia("(max-width: 760px), (pointer: coarse)").matches);
+    var OCTAVES = lowPower ? 3 : 5;
+
     var gl = canvas.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: false, powerPreference: "low-power" }) ||
       canvas.getContext("experimental-webgl", { antialias: false, alpha: true, premultipliedAlpha: false });
     if (!gl) return;
@@ -359,7 +362,7 @@
       "}\n" +
       "float fbm(vec2 p) {\n" +
       "  float v = 0.0; float amp = 0.5;\n" +
-      "  for (int i = 0; i < 5; i++) { v += amp * noise(p); p *= 2.02; amp *= 0.5; }\n" +
+      "  for (int i = 0; i < " + OCTAVES + "; i++) { v += amp * noise(p); p *= 2.02; amp *= 0.5; }\n" +
       "  return v;\n" +
       "}\n" +
       "void main() {\n" +
@@ -447,7 +450,7 @@
     var themeObserver = new MutationObserver(applyThemeColors);
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 1.5);
     var mouse = { x: 0.5, y: 0.5, has: 0 };
     var visible = true;
     var raf = null;
@@ -550,7 +553,7 @@
     var canvas = document.getElementById("hero-grid");
     if (!canvas) return;
     var ctx = canvas.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var dpr = Math.min(window.devicePixelRatio || 1, (window.matchMedia && window.matchMedia("(max-width: 760px), (pointer: coarse)").matches) ? 1 : 2);
     var mouse = { x: -9999, y: -9999 };
     var particles = [];
     var raf = null;

@@ -1756,30 +1756,20 @@
     .how-viewport::before { animation: none; display: none; }
   }
 
-  @keyframes holoSplit {
-    0%   { text-shadow: -2px 0 rgba(var(--neon-1-rgb), 0.85), 2px 0 rgba(var(--neon-2-rgb), 0.85); }
-    18%  { text-shadow: 2px 0 rgba(var(--neon-1-rgb), 0.85), -2px 0 rgba(var(--neon-2-rgb), 0.85); }
-    36%  { text-shadow: -1px 0 rgba(var(--neon-1-rgb), 0.6), 1px 0 rgba(var(--neon-2-rgb), 0.6); }
-    100% { text-shadow: 0 0 7px rgba(var(--neon-1-rgb), 0.5); }
+  @keyframes holoFlow {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
   }
-  @keyframes holoNudge {
-    0%   { transform: translateX(-1px); }
-    18%  { transform: translateX(1px); }
-    36%  { transform: translateX(0); }
-    100% { transform: translateX(0); }
-  }
-  @keyframes holoSheen {
-    0%   { transform: translateX(-120%); }
-    100% { transform: translateX(220%); }
+  @keyframes railFlow {
+    0%   { background-position: 50% 0%; }
+    100% { background-position: 50% 300%; }
   }
 
   .nav-links a:hover,
   .nav-terms-btn:hover,
-  .footer-terms-btn:hover,
-  .link-arrow:hover {
+  .footer-terms-btn:hover {
     color: var(--neon-1);
     border-color: var(--neon-1);
-    animation: holoSplit 0.42s steps(3, end) 1;
   }
 
   .btn:not(.btn-primary):hover,
@@ -1788,52 +1778,78 @@
   .footer-top-btn:hover {
     border-color: var(--neon-1);
     color: var(--neon-1);
-    animation: holoSplit 0.42s steps(3, end) 1, holoNudge 0.42s steps(3, end) 1;
   }
 
   .btn-primary:hover,
   .nav-cta:hover {
-    background: var(--neon-1);
     color: var(--bg);
-    box-shadow: -3px 0 0 rgba(var(--neon-2-rgb), 0.75), 3px 0 0 rgba(var(--neon-1-rgb), 0.55), 0 0 22px rgba(var(--neon-1-rgb), 0.35);
-    animation: holoNudge 0.42s steps(3, end) 1;
+    background-image: linear-gradient(90deg, var(--neon-1), var(--neon-2), var(--neon-1), var(--neon-2), var(--neon-1));
+    background-size: 300% 100%;
+    animation: holoFlow 2.4s linear infinite;
   }
 
-  .project-card, .offer-card, .skill-group, .contact-card { position: relative; }
-  .project-card::after,
+  .project-card,
+  .offer-card,
+  .skill-group,
+  .contact-card { position: relative; }
+
+  .project-content,
+  .offer-card,
+  .skill-group,
+  .contact-card { position: relative; }
+
+  .project-content::after,
   .offer-card::after,
   .skill-group::after,
   .contact-card::after {
     content: "";
     position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 28%;
+    inset: 0;
     pointer-events: none;
     opacity: 0;
-    background: linear-gradient(100deg, transparent, rgba(var(--neon-1-rgb), 0.16), rgba(var(--neon-2-rgb), 0.1), transparent);
+    transition: opacity 0.28s ease;
+    background-image: linear-gradient(
+      100deg,
+      transparent 0%,
+      rgba(var(--neon-1-rgb), 0.10) 18%,
+      rgba(var(--neon-2-rgb), 0.13) 34%,
+      rgba(var(--neon-1-rgb), 0.10) 50%,
+      transparent 68%,
+      rgba(var(--neon-2-rgb), 0.10) 84%,
+      transparent 100%
+    );
+    background-size: 300% 100%;
   }
-  .project-card:hover::after,
+  .project-card:hover .project-content::after,
   .offer-card:hover::after,
   .skill-group:hover::after,
   .contact-card:hover::after {
     opacity: 1;
-    animation: holoSheen 0.85s ease-out 1;
+    animation: holoFlow 3.2s linear infinite;
   }
-  .project-card:hover, .offer-card:hover, .skill-group:hover, .contact-card:hover {
-    border-color: var(--neon-1);
+  .project-card:hover,
+  .offer-card:hover,
+  .skill-group:hover,
+  .contact-card:hover { border-color: var(--neon-1); }
+
+  .offer-card::before,
+  .skill-group::before,
+  .project-card::before {
+    background-image: linear-gradient(180deg, var(--neon-1), var(--neon-2), var(--neon-1), var(--neon-2), var(--neon-1));
+    background-size: 100% 300%;
   }
-  .project-card:hover .project-title,
-  .offer-card:hover .offer-title {
-    animation: holoSplit 0.42s steps(3, end) 1;
+  .offer-card:hover::before,
+  .skill-group:hover::before,
+  .project-card:hover::before {
+    opacity: 1;
+    animation: railFlow 2.8s linear infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav-links a:hover, .nav-terms-btn:hover, .footer-terms-btn:hover,
-    .btn:hover, .filter-btn:hover, .chip:hover, .footer-top-btn:hover,
     .btn-primary:hover, .nav-cta:hover,
-    .project-card:hover .project-title, .offer-card:hover .offer-title,
-    .project-card:hover::after, .offer-card:hover::after,
-    .skill-group:hover::after, .contact-card:hover::after {
+    .project-card:hover .project-content::after,
+    .offer-card:hover::after, .skill-group:hover::after, .contact-card:hover::after,
+    .offer-card:hover::before, .skill-group:hover::before, .project-card:hover::before {
       animation: none;
     }
   }

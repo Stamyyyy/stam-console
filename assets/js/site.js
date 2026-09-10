@@ -89,20 +89,32 @@
     }, 350);
   }
 
+  var bootRunId = 0;
+
+  function cancelBootLog() {
+    bootRunId += 1;
+  }
+
   function runBootLog(lines, onDone, startDelay, holdDelay) {
     var logo = document.getElementById("loader-logo");
     var log = document.getElementById("loader-log");
     if (!log) { onDone(); return; }
+
+    bootRunId += 1;
+    var runId = bootRunId;
     log.textContent = "";
 
     var li = 0;
     function typeLine() {
+      if (runId !== bootRunId) return;
       if (li >= lines.length) {
         if (logo) {
           logo.classList.add("is-glitching");
           logo.addEventListener("animationend", function () { logo.classList.remove("is-glitching"); }, { once: true });
         }
-        setTimeout(onDone, 380 + (holdDelay || 0));
+        setTimeout(function () {
+          if (runId === bootRunId) onDone();
+        }, 380 + (holdDelay || 0));
         return;
       }
       var el = document.createElement("div");
@@ -111,6 +123,7 @@
       var text = lines[li];
       var ci = 0;
       var timer = setInterval(function () {
+        if (runId !== bootRunId) { clearInterval(timer); return; }
         el.textContent = text.slice(0, ci);
         ci++;
         if (ci > text.length) {
@@ -121,7 +134,9 @@
         }
       }, 13);
     }
-    setTimeout(typeLine, startDelay || 0);
+    setTimeout(function () {
+      if (runId === bootRunId) typeLine();
+    }, startDelay || 0);
   }
 
   (function () {
@@ -142,6 +157,7 @@
     function finish() {
       if (done) return;
       done = true;
+      cancelBootLog();
       loader.classList.add("is-hidden");
       try { sessionStorage.setItem("stam-intro-seen", "1"); } catch (e) {}
       setTimeout(function () { loader.style.display = "none"; }, 400);

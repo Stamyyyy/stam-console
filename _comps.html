@@ -1,0 +1,291 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+  @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/archivo-400.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo"; font-weight: 500; src: url("assets/fonts/archivo-500.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo"; font-weight: 700; src: url("assets/fonts/archivo-700.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo Black"; font-weight: 400; src: url("assets/fonts/archivo-black-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/jetbrains-mono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; src: url("assets/fonts/jetbrains-mono-700.woff2") format("woff2"); }
+
+  :root {
+    --bg: #090b0f; --surface: #131720; --border: #2a2f3a;
+    --text: #eaeaea; --dim: #9a9a9a; --faint: #6f6f76;
+    --accent: #00f0ff; --live: #4af626;
+    --mono: "JetBrains Mono", monospace;
+    --sans: "Archivo", sans-serif;
+    --display: "Archivo Black", "Archivo", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #000; }
+  .sec {
+    width: 1600px; height: 900px; position: relative; overflow: hidden;
+    background: var(--bg); color: var(--text); font-family: var(--sans);
+  }
+  .label {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--faint);
+  }
+  .label .idx { color: var(--accent); }
+
+  .h-img {
+    position: absolute; inset: 0;
+    background: url("videos/wraith-poster.jpg") center/cover no-repeat;
+    filter: grayscale(1) contrast(1.15) brightness(0.85) sepia(1) hue-rotate(152deg) saturate(2.6);
+  }
+  .h-veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg, rgba(9,11,15,0.97) 0%, rgba(9,11,15,0.9) 34%, rgba(9,11,15,0.45) 72%, rgba(9,11,15,0.2) 100%);
+  }
+  .h-scan {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(234,234,234,0.035) 0 1px, transparent 1px 3px);
+  }
+  .h-top { position: absolute; top: 54px; left: 76px; right: 76px; display: flex; justify-content: space-between; align-items: center; }
+  .h-mark { display: flex; align-items: center; gap: 14px; font-family: var(--mono); font-size: 16px; letter-spacing: 0.1em; }
+  .h-body { position: absolute; left: 76px; bottom: 86px; max-width: 1180px; }
+  .h-body h1 {
+    font-family: var(--display); font-size: 116px; line-height: 0.86;
+    letter-spacing: -0.035em; margin: 22px 0 28px; white-space: nowrap;
+  }
+  .h-sub { font-size: 24px; color: var(--dim); max-width: 56ch; line-height: 1.5; }
+  .h-cta { display: flex; align-items: center; gap: 28px; margin-top: 42px; }
+  .btn-ghost {
+    font-family: var(--sans); font-weight: 700; font-size: 17px;
+    border: 1.5px solid var(--accent); color: var(--accent);
+    padding: 17px 32px;
+  }
+  .link-arrow { font-family: var(--mono); font-size: 15px; color: var(--dim); letter-spacing: 0.06em; }
+  .siderail {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 92px;
+    border-left: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .siderail span {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.34em; color: var(--faint);
+    writing-mode: vertical-rl; text-transform: uppercase;
+  }
+
+  .g-grid {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,240,255,0.05) 0 1px, transparent 1px 56px),
+      repeating-linear-gradient(90deg, rgba(0,240,255,0.05) 0 1px, transparent 1px 56px);
+  }
+  .w-wrap { position: absolute; inset: 0; padding: 74px 76px; display: flex; flex-direction: column; }
+  .w-head { display: flex; justify-content: space-between; align-items: flex-end; }
+  .w-head h2 { font-family: var(--display); font-size: 76px; letter-spacing: -0.03em; line-height: 0.9; }
+  .w-rows { margin-top: 54px; display: flex; flex-direction: column; }
+  .w-row {
+    display: grid; grid-template-columns: 74px 1fr 210px 128px 132px;
+    align-items: center; gap: 30px;
+    padding: 22px 0; border-top: 1px solid var(--border);
+  }
+  .w-row:last-child { border-bottom: 1px solid var(--border); }
+  .w-no { font-family: var(--mono); font-size: 14px; color: var(--accent); }
+  .w-name { font-family: var(--display); font-size: 34px; letter-spacing: -0.02em; }
+  .w-kind, .w-stack { font-family: var(--mono); font-size: 14px; color: var(--faint); letter-spacing: 0.05em; }
+  .w-thumb { width: 132px; height: 62px; object-fit: cover; border: 1px solid var(--border); filter: grayscale(1) brightness(0.8) contrast(1.1); }
+  .w-row.is-lead .w-thumb { filter: none; border-color: var(--accent); }
+  .w-row.is-lead .w-name { color: var(--accent); }
+
+  .d-media { position: absolute; left: 0; top: 0; bottom: 0; width: 62%; overflow: hidden; }
+  .d-media img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.08) brightness(0.88); }
+  .d-crop {
+    position: absolute; left: 76px; bottom: 76px; width: 300px; height: 178px;
+    border: 1px solid var(--accent); overflow: hidden;
+    box-shadow: 0 26px 60px rgba(0,0,0,0.75);
+  }
+  .d-crop img { width: 100%; height: 100%; object-fit: cover; transform: scale(2.1); transform-origin: 32% 40%; }
+  .d-body { position: absolute; right: 76px; top: 50%; transform: translateY(-50%); width: 430px; }
+  .d-body h3 { font-family: var(--display); font-size: 62px; line-height: 0.92; letter-spacing: -0.03em; margin: 22px 0 24px; }
+  .d-body p { font-size: 19px; line-height: 1.62; color: var(--dim); }
+  .d-meta { margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px 18px; }
+  .d-k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+  .d-v { font-family: var(--mono); font-size: 15px; color: var(--text); margin-top: 7px; }
+
+  .c-noise { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,240,255,0.055), transparent 70%); }
+  .c-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .c-wrap h2 {
+    font-family: var(--display); font-size: 92px; letter-spacing: -0.035em;
+    line-height: 0.94; margin: 30px 0 0; max-width: 18ch;
+  }
+  .c-list { margin-top: 60px; display: flex; gap: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .c-item { padding: 30px 46px; border-right: 1px solid var(--border); }
+  .c-item:last-child { border-right: 0; }
+  .c-item .n { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.14em; }
+  .c-item .t { font-family: var(--sans); font-weight: 700; font-size: 21px; margin-top: 12px; }
+
+  .p-lines { position: absolute; inset: 0; display: flex; justify-content: space-between; padding: 0 76px; }
+  .p-lines i { width: 1px; background: linear-gradient(180deg, transparent, rgba(42,47,58,0.9) 22%, rgba(42,47,58,0.9) 78%, transparent); }
+  .p-head { position: absolute; left: 76px; top: 92px; }
+  .p-head h2 { font-family: var(--display); font-size: 82px; letter-spacing: -0.03em; line-height: 0.9; margin-top: 24px; }
+  .p-steps { position: absolute; right: 76px; bottom: 96px; width: 760px; display: flex; flex-direction: column; gap: 0; }
+  .p-step { display: grid; grid-template-columns: 92px 1fr; gap: 26px; padding: 30px 0; border-top: 1px solid var(--border); }
+  .p-step:last-child { border-bottom: 1px solid var(--border); }
+  .p-step .no { font-family: var(--mono); font-size: 15px; color: var(--accent); padding-top: 5px; }
+  .p-step h4 { font-family: var(--sans); font-weight: 700; font-size: 25px; }
+  .p-step p { font-size: 17px; color: var(--dim); margin-top: 9px; line-height: 1.55; }
+  .p-off { position: absolute; left: 76px; bottom: 110px; width: 330px; }
+  .p-off .q { font-family: var(--display); font-size: 30px; line-height: 1.18; letter-spacing: -0.02em; color: var(--accent); }
+
+  .t-img {
+    position: absolute; inset: 0;
+    background: url("videos/seance-poster.jpg") center/cover no-repeat;
+    filter: grayscale(1) brightness(0.34) contrast(1.3) sepia(1) hue-rotate(148deg) saturate(2.4);
+  }
+  .t-vig { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 50% 55%, transparent 12%, rgba(9,11,15,0.93) 78%); }
+  .t-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 118px; text-align: center; }
+  .t-wrap h2 { font-family: var(--display); font-size: 118px; letter-spacing: -0.035em; line-height: 0.88; margin: 26px 0 26px; }
+  .t-wrap p { font-size: 21px; color: var(--dim); max-width: 52ch; line-height: 1.55; }
+  .t-btn {
+    margin-top: 46px; font-family: var(--sans); font-weight: 700; font-size: 19px;
+    background: var(--accent); color: #04252b; padding: 22px 54px;
+  }
+  .t-note { margin-top: 26px; font-family: var(--mono); font-size: 14px; color: var(--faint); letter-spacing: 0.06em; }
+  .t-dot { display: inline-block; width: 8px; height: 8px; background: var(--live); margin-right: 10px; }
+</style>
+</head>
+<body>
+
+<section class="sec" id="s1">
+  <div class="h-img"></div><div class="h-veil"></div><div class="h-scan"></div>
+  <div class="h-top">
+    <div class="h-mark"><svg width="26" height="26" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" fill="none" stroke="#00f0ff" stroke-width="3"/><path d="M18 20 L34 32 L18 44" stroke="#00f0ff" stroke-width="8" fill="none" stroke-linecap="square"/><rect x="40" y="38" width="14" height="7" fill="#00f0ff"/></svg> STAM</div>
+    <div class="label"><span class="idx">●</span> AVAILABLE FOR WORK</div>
+  </div>
+  <div class="siderail"><span>Index / 01 — Dossier</span></div>
+  <div class="h-body">
+    <div class="label"><span class="idx">01</span> &nbsp;/&nbsp; Full-stack developer</div>
+    <h1>Software that<br>actually ships.</h1>
+    <p class="h-sub">Discord bots, desktop apps, web apps, and the databases behind them — built end to end, by one person.</p>
+    <div class="h-cta">
+      <div class="btn-ghost">See the work</div>
+      <div class="link-arrow">or reach me on Discord &nbsp;→</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="g-grid"></div>
+  <div class="w-wrap">
+    <div class="w-head">
+      <div>
+        <div class="label"><span class="idx">02</span> &nbsp;/&nbsp; Selected builds</div>
+        <h2>The index.</h2>
+      </div>
+      <div class="label">Six shipped &nbsp;·&nbsp; all coded solo</div>
+    </div>
+    <div class="w-rows">
+      <div class="w-row is-lead">
+        <div class="w-no">001</div>
+        <div class="w-name">Wraith</div>
+        <div class="w-kind">Task manager replacement</div>
+        <div class="w-stack">Electron · C++</div>
+        <img class="w-thumb" src="videos/wraith-poster.jpg" alt="">
+      </div>
+      <div class="w-row">
+        <div class="w-no">002</div>
+        <div class="w-name">Séance</div>
+        <div class="w-kind">Multi-project dashboard + CLI</div>
+        <div class="w-stack">Electron · Node</div>
+        <img class="w-thumb" src="videos/seance-poster.jpg" alt="">
+      </div>
+      <div class="w-row">
+        <div class="w-no">003</div>
+        <div class="w-name">Revenant</div>
+        <div class="w-kind">Explorer replacement, NTFS search</div>
+        <div class="w-stack">Electron · C++</div>
+        <img class="w-thumb" src="videos/revenant-poster.jpg" alt="">
+      </div>
+      <div class="w-row">
+        <div class="w-no">004</div>
+        <div class="w-name">Specter</div>
+        <div class="w-kind">Tabbed transparent workspace</div>
+        <div class="w-stack">node-pty · xterm</div>
+        <img class="w-thumb" src="videos/specter-poster.jpg" alt="">
+      </div>
+      <div class="w-row">
+        <div class="w-no">005</div>
+        <div class="w-name">JARVIS</div>
+        <div class="w-kind">Animated boot sequence</div>
+        <div class="w-stack">Three.js · Web Audio</div>
+        <img class="w-thumb" src="videos/jarvis-poster.jpg" alt="">
+      </div>
+      <div class="w-row">
+        <div class="w-no">006</div>
+        <div class="w-name">Frontline</div>
+        <div class="w-kind">Community bot + site</div>
+        <div class="w-stack">JavaScript · Cloud DB</div>
+        <img class="w-thumb" src="videos/frontline-poster.jpg" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="d-media">
+    <img src="videos/specter-poster.jpg" alt="">
+  </div>
+  <div class="d-crop"><img src="videos/specter-poster.jpg" alt=""></div>
+  <div class="d-body">
+    <div class="label"><span class="idx">03</span> &nbsp;/&nbsp; Case</div>
+    <h3>Specter</h3>
+    <p>A transparent Task Manager replacement — Processes, Performance, Startup and Services in one see-through window, with controls stock Task Manager never exposed.</p>
+    <div class="d-meta">
+      <div><div class="d-k">Role</div><div class="d-v">Solo developer</div></div>
+      <div><div class="d-k">Surface</div><div class="d-v">Windows desktop</div></div>
+      <div><div class="d-k">Stack</div><div class="d-v">Electron, PowerShell</div></div>
+      <div><div class="d-k">Native</div><div class="d-v">C++ Win32 addon</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s4">
+  <div class="c-noise"></div>
+  <div class="c-wrap">
+    <div class="label"><span class="idx">04</span> &nbsp;/&nbsp; What I build</div>
+    <h2>Four things, done properly.</h2>
+    <div class="c-list">
+      <div class="c-item"><div class="n">01</div><div class="t">Discord bots</div></div>
+      <div class="c-item"><div class="n">02</div><div class="t">Desktop apps</div></div>
+      <div class="c-item"><div class="n">03</div><div class="t">Web apps &amp; databases</div></div>
+      <div class="c-item"><div class="n">04</div><div class="t">Interface &amp; motion</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="p-lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="p-head">
+    <div class="label"><span class="idx">05</span> &nbsp;/&nbsp; How it goes</div>
+    <h2>Simple<br>on purpose.</h2>
+  </div>
+  <div class="p-off"><div class="q">&ldquo;I'd rather own the whole build than hand off half of it.&rdquo;</div></div>
+  <div class="p-steps">
+    <div class="p-step">
+      <div class="no">01</div>
+      <div><h4>Tell me what you need</h4><p>No jargon required. Describe the problem and I'll take it from there.</p></div>
+    </div>
+    <div class="p-step">
+      <div class="no">02</div>
+      <div><h4>I scope it honestly</h4><p>What it actually takes to build — and if I'm not the right person, I say so.</p></div>
+    </div>
+    <div class="p-step">
+      <div class="no">03</div>
+      <div><h4>I build and ship it</h4><p>Frontend to backend, until it's live and working, not handed off half done.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s6">
+  <div class="t-img"></div><div class="t-vig"></div>
+  <div class="t-wrap">
+    <div class="label"><span class="idx">06</span> &nbsp;/&nbsp; Start here</div>
+    <h2>Tell me what<br>you need built.</h2>
+    <p>Small, well-scoped projects are the easiest ones to say yes to.</p>
+    <div class="t-btn">Message me on Discord</div>
+    <div class="t-note"><span class="t-dot"></span>stamyyyy &nbsp;·&nbsp; usually replies same day</div>
+  </div>
+</section>
+
+</body></html>

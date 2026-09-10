@@ -6,6 +6,8 @@
       "**/.*",
       "**/node_modules/**",
       "_b-*.html",
+      "_comps.html",
+      "assets/comps/**",
       "assets/banners/**"
     ],
     "headers": [

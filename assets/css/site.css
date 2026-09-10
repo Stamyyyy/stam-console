@@ -1755,10 +1755,10 @@
     animation: howPulse 5.5s ease-in-out infinite;
   }
   @keyframes howPulse {
-    0%   { top: -84px; opacity: 0; }
-    14%  { opacity: 0.9; }
-    86%  { opacity: 0.9; }
-    100% { top: 100%; opacity: 0; }
+    0%   { top: 0.9rem; opacity: 0; }
+    12%  { opacity: 0.9; }
+    88%  { opacity: 0.9; }
+    100% { top: calc(100% - 0.9rem - 84px); opacity: 0; }
   }
 
   .step { position: relative; }

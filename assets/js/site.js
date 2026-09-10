@@ -456,9 +456,9 @@
       var canvasAspect = Math.max(canvas.width, 1) / Math.max(canvas.height, 1);
       var mapAspect = 2.0;
       if (canvasAspect > mapAspect) {
-        gl.uniform2f(uMapScale, canvasAspect / mapAspect, 1.0);
-      } else {
         gl.uniform2f(uMapScale, 1.0, mapAspect / canvasAspect);
+      } else {
+        gl.uniform2f(uMapScale, canvasAspect / mapAspect, 1.0);
       }
     }
 

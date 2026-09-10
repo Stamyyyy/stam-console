@@ -126,15 +126,20 @@
 
     cycle();
 
+    var onScreen = true;
+    var tabVisible = !document.hidden;
+
     if ("IntersectionObserver" in global) {
       var io = new IntersectionObserver(function (entries) {
-        running = entries[0].isIntersecting && !document.hidden;
+        onScreen = entries[0].isIntersecting;
+        running = onScreen && tabVisible;
       }, { threshold: 0 });
       io.observe(el);
     }
 
     document.addEventListener("visibilitychange", function () {
-      running = !document.hidden;
+      tabVisible = !document.hidden;
+      running = onScreen && tabVisible;
     });
 
     return {

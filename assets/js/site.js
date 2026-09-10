@@ -1221,7 +1221,7 @@
   })();
 
   if (typeof window.createCodeTyper === "function") {
-    window.createCodeTyper("offer-code-typer", [
+    window.createCodeTyper("about-code-typer", [
       [
         "float fbm(vec2 p) {",
         "  float v = 0.0; float amp = 0.5;",

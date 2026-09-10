@@ -190,10 +190,10 @@
     var root = document.documentElement;
     var btn = document.getElementById("theme-toggle");
     var STORAGE_KEY = "stam-console-theme";
-    var mql = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+    var mql = null;
 
     function systemTheme() {
-      return mql && mql.matches ? "light" : "dark";
+      return "dark";
     }
     function effectiveTheme() {
       var explicit = root.getAttribute("data-theme");

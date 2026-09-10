@@ -89,7 +89,7 @@
     }, 350);
   }
 
-  function runBootLog(lines, onDone, startDelay) {
+  function runBootLog(lines, onDone, startDelay, holdDelay) {
     var logo = document.getElementById("loader-logo");
     var log = document.getElementById("loader-log");
     if (!log) { onDone(); return; }
@@ -102,7 +102,7 @@
           logo.classList.add("is-glitching");
           logo.addEventListener("animationend", function () { logo.classList.remove("is-glitching"); }, { once: true });
         }
-        setTimeout(onDone, 380);
+        setTimeout(onDone, 380 + (holdDelay || 0));
         return;
       }
       var el = document.createElement("div");
@@ -398,7 +398,7 @@
       "    float edge = fbm(muv * 34.0 + t * 0.6);\n" +
       "    float dissolve = uHasMouse * smoothstep(0.46, 0.0, length((uv - uMouse) * vec2(uRes.x / uRes.y, 1.0)));\n" +
       "    land *= 1.0 - smoothstep(0.04, 0.6, dissolve * (0.72 + edge * 0.85));\n" +
-      "    land *= smoothstep(0.03, 0.38, uv.y);\n" +
+      "    land *= smoothstep(0.0, 0.10, uv.y);\n" +
       "    float coast = smoothstep(0.04, 0.5, land) * (1.0 - smoothstep(0.5, 0.96, land));\n" +
       "    vec3 landCol = uBase2 * 1.7 + hiMix * 0.42;\n" +
       "    col = mix(col, landCol, land);\n" +
@@ -452,9 +452,10 @@
     gl.uniform1f(uHasMap, 0.0);
     gl.uniform2f(uMapScale, 1.0, 1.0);
 
+    var mapAspect = 2.0;
+
     function fitMapScale() {
       var canvasAspect = Math.max(canvas.width, 1) / Math.max(canvas.height, 1);
-      var mapAspect = 2.0;
       if (canvasAspect > mapAspect) {
         gl.uniform2f(uMapScale, 1.0, mapAspect / canvasAspect);
       } else {
@@ -473,6 +474,7 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mapImg);
+        mapAspect = mapImg.width / mapImg.height;
         gl.uniform1i(uMap, 0);
         gl.uniform1f(uHasMap, 1.0);
         fitMapScale();
@@ -1005,10 +1007,14 @@
     if (!loader) return;
     loader.style.display = "flex";
     loader.classList.remove("is-hidden");
-    runBootLog([message || "hey, you found it."], function () {
+    runBootLog([
+      "> keyword accepted: JARVIS",
+      "> unlocking hidden routine... OK",
+      message || "hey, you found it."
+    ], function () {
       loader.classList.add("is-hidden");
       setTimeout(function () { loader.style.display = "none"; }, 400);
-    }, 150);
+    }, 150, 1600);
   }
 
   (function () {

@@ -1,0 +1,121 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script>
+  var fmt = new URLSearchParams(location.search).get("fmt") || "og";
+  document.documentElement.setAttribute("data-fmt", fmt);
+</script>
+<style>
+  @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/archivo-400.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo Black"; font-weight: 400; src: url("assets/fonts/archivo-black-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/jetbrains-mono-400.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: #080a0e; }
+  body { background: #080a0e; color: #eaeaea; font-family: "Archivo", sans-serif; position: relative; overflow: hidden; }
+  html[data-fmt="og"] body { width: 1200px; height: 630px; }
+  html[data-fmt="x"] body { width: 1500px; height: 500px; }
+  html[data-fmt="gh"] body { width: 1280px; height: 320px; }
+
+  .grid {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,240,255,0.075) 0px, rgba(0,240,255,0.075) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(0,240,255,0.075) 0px, rgba(0,240,255,0.075) 1px, transparent 1px, transparent 40px);
+  }
+  .grid-fine {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,240,255,0.035) 0px, rgba(0,240,255,0.035) 1px, transparent 1px, transparent 8px),
+      repeating-linear-gradient(90deg, rgba(0,240,255,0.035) 0px, rgba(0,240,255,0.035) 1px, transparent 1px, transparent 8px);
+  }
+  .vignette {
+    position: absolute; inset: 0; z-index: 1;
+    background: radial-gradient(ellipse 75% 75% at 40% 50%, transparent 30%, rgba(8,10,14,0.88) 100%);
+  }
+
+  .cross { position: absolute; z-index: 2; width: 22px; height: 22px; }
+  .cross::before, .cross::after { content: ""; position: absolute; background: rgba(0,240,255,0.6); }
+  .cross::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+  .cross::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+  .c1 { top: 64px; left: 64px; } .c2 { top: 64px; right: 64px; }
+  .c3 { bottom: 64px; left: 64px; } .c4 { bottom: 64px; right: 64px; }
+  html[data-fmt="gh"] .c1, html[data-fmt="gh"] .c2 { top: 34px; }
+  html[data-fmt="gh"] .c3, html[data-fmt="gh"] .c4 { bottom: 34px; }
+
+  .dim {
+    position: absolute; z-index: 3;
+    font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.08em;
+    color: rgba(0,240,255,0.75); text-transform: uppercase;
+  }
+  .dim.top { top: 42px; left: 50%; transform: translateX(-50%); }
+  html[data-fmt="gh"] .dim.top { top: 20px; }
+
+  .rule { position: absolute; z-index: 3; background: rgba(0,240,255,0.35); }
+  .rule.h { height: 1px; left: 100px; right: 100px; top: 64px; }
+  html[data-fmt="gh"] .rule.h { top: 34px; }
+
+  .stage { position: absolute; z-index: 4; left: 104px; top: 50%; transform: translateY(-50%); }
+  html[data-fmt="gh"] .stage { left: 76px; }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace; font-size: 17px; letter-spacing: 0.2em;
+    color: #00f0ff; text-transform: uppercase;
+    border-left: 3px solid #00f0ff; padding-left: 14px;
+  }
+  html[data-fmt="gh"] .eyebrow { font-size: 12px; padding-left: 10px; }
+
+  h1 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 152px; line-height: 0.84; letter-spacing: -0.03em;
+    margin: 22px 0 24px; color: #eaeaea;
+  }
+  html[data-fmt="x"] h1 { font-size: 134px; }
+  html[data-fmt="gh"] h1 { font-size: 82px; margin: 12px 0 14px; }
+
+  .specs { display: flex; gap: 34px; }
+  .spec-k { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.14em; color: #5d6672; text-transform: uppercase; }
+  .spec-v { font-family: "JetBrains Mono", monospace; font-size: 15px; color: #d3d8de; margin-top: 5px; }
+  html[data-fmt="gh"] .spec-v { font-size: 12px; }
+  html[data-fmt="gh"] .spec-k { font-size: 9px; }
+
+  .schematic { position: absolute; z-index: 3; right: 108px; top: 50%; transform: translateY(-50%); }
+  html[data-fmt="gh"] .schematic { right: 70px; transform: translateY(-50%) scale(0.6); }
+  html[data-fmt="x"] .schematic { right: 150px; }
+
+  .url {
+    position: absolute; z-index: 4; bottom: 56px; left: 104px;
+    font-family: "JetBrains Mono", monospace; font-size: 15px; color: #5d6672;
+  }
+  html[data-fmt="gh"] .url { bottom: 28px; left: 76px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <div class="grid-fine"></div>
+  <div class="grid"></div>
+  <div class="vignette"></div>
+
+  <div class="cross c1"></div><div class="cross c2"></div>
+  <div class="cross c3"></div><div class="cross c4"></div>
+  <div class="rule h"></div>
+  <div class="dim top">&larr; unit / d-01 &mdash; rev 2.6 &rarr;</div>
+
+  <svg class="schematic" width="230" height="230" viewBox="0 0 100 100" aria-hidden="true">
+    <rect x="6" y="6" width="88" height="88" fill="none" stroke="rgba(0,240,255,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
+    <path d="M28 30 L54 50 L28 70" stroke="#00f0ff" stroke-width="9" stroke-linecap="square" stroke-linejoin="miter" fill="none"/>
+    <rect x="62" y="60" width="22" height="10" fill="#00f0ff"/>
+    <line x1="28" y1="22" x2="54" y2="22" stroke="rgba(0,240,255,0.55)" stroke-width="0.8"/>
+    <line x1="28" y1="18" x2="28" y2="26" stroke="rgba(0,240,255,0.55)" stroke-width="0.8"/>
+    <line x1="54" y1="18" x2="54" y2="26" stroke="rgba(0,240,255,0.55)" stroke-width="0.8"/>
+    <line x1="90" y1="30" x2="90" y2="70" stroke="rgba(0,240,255,0.4)" stroke-width="0.8"/>
+  </svg>
+
+  <div class="stage">
+    <div class="eyebrow">full-stack developer</div>
+    <h1>STAM.</h1>
+    <div class="specs">
+      <div><div class="spec-k">builds</div><div class="spec-v">Discord bots</div></div>
+      <div><div class="spec-k">builds</div><div class="spec-v">Web apps &amp; DBs</div></div>
+      <div><div class="spec-k">builds</div><div class="spec-v">Desktop apps</div></div>
+    </div>
+  </div>
+
+  <div class="url">stam-console.web.app</div>
+</body></html>

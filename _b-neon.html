@@ -1,0 +1,108 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script>
+  var fmt = new URLSearchParams(location.search).get("fmt") || "og";
+  document.documentElement.setAttribute("data-fmt", fmt);
+</script>
+<style>
+  @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/archivo-400.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo"; font-weight: 700; src: url("assets/fonts/archivo-700.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo Black"; font-weight: 400; src: url("assets/fonts/archivo-black-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/jetbrains-mono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; src: url("assets/fonts/jetbrains-mono-700.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: #090b0f; }
+  body { background: #090b0f; color: #eaeaea; font-family: "Archivo", sans-serif; position: relative; overflow: hidden; }
+  html[data-fmt="og"] body { width: 1200px; height: 630px; }
+  html[data-fmt="x"] body { width: 1500px; height: 500px; }
+  html[data-fmt="gh"] body { width: 1280px; height: 320px; }
+
+  .scan {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(234,234,234,0.045) 0px, rgba(234,234,234,0.045) 1px, transparent 1px, transparent 3px);
+  }
+  .glowfield {
+    position: absolute; z-index: 0; pointer-events: none;
+    width: 900px; height: 900px; border-radius: 50%;
+    right: -280px; top: 50%; transform: translateY(-50%);
+    background: radial-gradient(circle, rgba(0,240,255,0.16) 0%, rgba(255,42,212,0.07) 38%, transparent 68%);
+  }
+  .frame { position: absolute; inset: 26px; border: 2px solid rgba(0,240,255,0.55); z-index: 2; }
+  html[data-fmt="gh"] .frame { inset: 18px; }
+  .corner { position: absolute; width: 18px; height: 18px; border: 0 solid #00f0ff; }
+  .corner.tl { top: -3px; left: -3px; border-width: 4px 0 0 4px; }
+  .corner.tr { top: -3px; right: -3px; border-width: 4px 4px 0 0; }
+  .corner.bl { bottom: -3px; left: -3px; border-width: 0 0 4px 4px; }
+  .corner.br { bottom: -3px; right: -3px; border-width: 0 4px 4px 0; }
+
+  .hud { position: absolute; z-index: 4; font-family: "JetBrains Mono", monospace; font-size: 15px; letter-spacing: 0.09em; text-transform: uppercase; }
+  .hud.l { top: 50px; left: 66px; color: #6f6f76; }
+  .hud.r { top: 50px; right: 66px; color: #00f0ff; text-shadow: 0 0 12px rgba(0,240,255,0.7); }
+  html[data-fmt="gh"] .hud { font-size: 12px; }
+  html[data-fmt="gh"] .hud.l { top: 34px; left: 50px; }
+  html[data-fmt="gh"] .hud.r { top: 34px; right: 50px; }
+
+  .stage { position: absolute; z-index: 4; left: 66px; top: 50%; transform: translateY(-50%); }
+  html[data-fmt="gh"] .stage { left: 50px; }
+  html[data-fmt="x"] .stage { left: 50%; transform: translate(-50%, -50%); text-align: center; }
+
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 19px; letter-spacing: 0.16em; color: #9a9a9a; text-transform: uppercase; }
+  html[data-fmt="gh"] .eyebrow { font-size: 14px; }
+
+  h1 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 150px; line-height: 0.84; letter-spacing: -0.025em;
+    margin: 16px 0 22px; color: #ffffff;
+    text-shadow: 0 0 34px rgba(0,240,255,0.55), 3px 0 rgba(0,240,255,0.5), -3px 0 rgba(255,42,212,0.45);
+  }
+  html[data-fmt="x"] h1 { font-size: 132px; margin: 14px 0 20px; }
+  html[data-fmt="gh"] h1 { font-size: 84px; margin: 8px 0 12px; }
+
+  .tags { display: flex; gap: 13px; }
+  html[data-fmt="x"] .tags { justify-content: center; }
+  .tag {
+    font-family: "JetBrains Mono", monospace; font-size: 16px; letter-spacing: 0.03em;
+    border: 1px solid rgba(0,240,255,0.45); padding: 9px 15px; color: #eaeaea;
+    box-shadow: 0 0 18px rgba(0,240,255,0.18) inset;
+  }
+  html[data-fmt="gh"] .tag { font-size: 12px; padding: 6px 11px; }
+
+  .url {
+    position: absolute; z-index: 4; bottom: 50px; right: 66px;
+    font-family: "JetBrains Mono", monospace; font-size: 18px; color: #9a9a9a;
+    display: flex; align-items: center; gap: 11px;
+  }
+  html[data-fmt="gh"] .url { bottom: 34px; right: 50px; font-size: 14px; }
+  .dot { width: 9px; height: 9px; background: #4af626; box-shadow: 0 0 12px #4af626; }
+
+  .mark { position: absolute; z-index: 4; right: 90px; top: 50%; transform: translateY(-50%); }
+  html[data-fmt="x"] .mark, html[data-fmt="gh"] .mark { display: none; }
+</style>
+</head>
+<body>
+  <div class="glowfield"></div>
+  <div class="frame">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+  </div>
+  <div class="hud l">[ core // stam.dev ]</div>
+  <div class="hud r">status: online</div>
+
+  <svg class="mark" width="190" height="190" viewBox="0 0 64 64" aria-hidden="true">
+    <rect x="2" y="2" width="60" height="60" fill="none" stroke="#00f0ff" stroke-width="2" opacity="0.5"/>
+    <path d="M16 18 L34 32 L16 46" stroke="#00f0ff" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter" fill="none" style="filter: drop-shadow(0 0 14px rgba(0,240,255,0.85))"/>
+    <rect x="40" y="38" width="16" height="7" fill="#00f0ff" style="filter: drop-shadow(0 0 12px rgba(0,240,255,0.85))"/>
+  </svg>
+
+  <div class="stage">
+    <div class="eyebrow">full-stack developer</div>
+    <h1>STAM.</h1>
+    <div class="tags">
+      <span class="tag">DISCORD BOTS</span>
+      <span class="tag">WEB APPS &amp; DATABASES</span>
+      <span class="tag">DESKTOP APPS</span>
+    </div>
+  </div>
+
+  <div class="url"><span class="dot"></span>stam-console.web.app</div>
+  <div class="scan"></div>
+</body></html>

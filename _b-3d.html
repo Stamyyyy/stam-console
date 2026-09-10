@@ -1,0 +1,92 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script>
+  var fmt = new URLSearchParams(location.search).get("fmt") || "og";
+  document.documentElement.setAttribute("data-fmt", fmt);
+</script>
+<style>
+  @font-face { font-family: "Archivo"; font-weight: 400; src: url("assets/fonts/archivo-400.woff2") format("woff2"); }
+  @font-face { font-family: "Archivo Black"; font-weight: 400; src: url("assets/fonts/archivo-black-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/jetbrains-mono-400.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: #06080b; }
+  body { background: #06080b; color: #eaeaea; font-family: "Archivo", sans-serif; position: relative; overflow: hidden; }
+  html[data-fmt="og"] body { width: 1200px; height: 630px; }
+  html[data-fmt="x"] body { width: 1500px; height: 500px; }
+  html[data-fmt="gh"] body { width: 1280px; height: 320px; }
+
+  .floor {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 68% 45%, rgba(0,240,255,0.13) 0%, transparent 62%),
+      linear-gradient(175deg, #10151c 0%, #06080b 58%);
+  }
+  .brush {
+    position: absolute; inset: 0; z-index: 1; opacity: 0.5;
+    background: repeating-linear-gradient(112deg, rgba(255,255,255,0.028) 0px, rgba(255,255,255,0.028) 1px, transparent 1px, transparent 4px);
+  }
+
+  .obj {
+    position: absolute; z-index: 2; right: 120px; top: 50%;
+    transform: translateY(-50%) rotate(-7deg);
+    filter:
+      drop-shadow(5px 7px 0 rgba(2,30,36,0.95))
+      drop-shadow(10px 14px 0 rgba(1,18,22,0.9))
+      drop-shadow(16px 22px 30px rgba(0,0,0,0.8));
+  }
+  html[data-fmt="x"] .obj { right: 150px; }
+  html[data-fmt="gh"] .obj { right: 80px; transform: translateY(-50%) rotate(-7deg) scale(0.55); }
+
+  .stage { position: absolute; z-index: 3; left: 78px; top: 50%; transform: translateY(-50%); }
+  html[data-fmt="gh"] .stage { left: 56px; }
+
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 18px; letter-spacing: 0.17em; color: #7f8794; text-transform: uppercase; }
+  html[data-fmt="gh"] .eyebrow { font-size: 13px; }
+
+  h1 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 146px; line-height: 0.85; letter-spacing: -0.028em;
+    margin: 18px 0 20px; color: #f2f6f8;
+    text-shadow: 0 5px 0 rgba(0,0,0,0.65), 0 14px 40px rgba(0,0,0,0.85);
+  }
+  html[data-fmt="x"] h1 { font-size: 128px; }
+  html[data-fmt="gh"] h1 { font-size: 80px; margin: 10px 0 12px; }
+
+  .sub { font-size: 21px; color: #aeb6c1; letter-spacing: 0.01em; }
+  html[data-fmt="gh"] .sub { font-size: 15px; }
+
+  .url {
+    position: absolute; z-index: 3; bottom: 54px; left: 78px;
+    font-family: "JetBrains Mono", monospace; font-size: 17px; color: #7f8794;
+    display: flex; align-items: center; gap: 10px;
+  }
+  html[data-fmt="gh"] .url { bottom: 30px; left: 56px; font-size: 13px; }
+  html[data-fmt="x"] .url { left: auto; right: 78px; bottom: 46px; }
+  .dot { width: 8px; height: 8px; background: #4af626; }
+</style>
+</head>
+<body>
+  <div class="floor"></div>
+  <div class="brush"></div>
+
+  <div class="obj">
+    <svg width="300" height="300" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8feff"/>
+          <stop offset="38%" stop-color="#00f0ff"/>
+          <stop offset="100%" stop-color="#046878"/>
+        </linearGradient>
+      </defs>
+      <path d="M16 16 L36 32 L16 48" stroke="url(#chrome)" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter" fill="none"/>
+      <rect x="41" y="39" width="17" height="9" fill="url(#chrome)"/>
+    </svg>
+  </div>
+
+  <div class="stage">
+    <div class="eyebrow">full-stack developer</div>
+    <h1>STAM.</h1>
+    <div class="sub">Discord bots &middot; Web apps &amp; databases &middot; Desktop apps</div>
+  </div>
+
+  <div class="url"><span class="dot"></span>stam-console.web.app</div>
+</body></html>

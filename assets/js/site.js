@@ -323,7 +323,7 @@
     });
   }
 
-  function initLiquidMetal(canvasId, containerSelector, readoutId) {
+  function initLiquidMetal(canvasId, containerSelector, readoutId, mapUrl) {
     var canvas = document.getElementById(canvasId);
     var heroSection = document.querySelector(containerSelector);
     var readout = readoutId ? document.getElementById(readoutId) : null;
@@ -352,6 +352,9 @@
       "uniform vec3 uBase2;\n" +
       "uniform vec3 uHi1;\n" +
       "uniform vec3 uHi2;\n" +
+      "uniform sampler2D uMap;\n" +
+      "uniform float uHasMap;\n" +
+      "uniform vec2 uMapScale;\n" +
       "float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }\n" +
       "float noise(vec2 p) {\n" +
       "  vec2 i = floor(p); vec2 f = fract(p);\n" +
@@ -388,7 +391,22 @@
       "  float vig = smoothstep(1.1, 0.35, length(uv - 0.5) * 1.4);\n" +
       "  float alpha = clamp(pow(max(band, 0.0), 1.6) * (0.85 + uTurb * 0.3), 0.0, 0.82) + flow * 0.05;\n" +
       "  alpha *= mix(0.35, 1.0, vig);\n" +
-      "  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.85));\n" +
+      "  if (uHasMap > 0.5) {\n" +
+      "    vec2 muv = (uv - 0.5) * uMapScale + 0.5;\n" +
+      "    float inside = step(0.0, muv.x) * step(muv.x, 1.0) * step(0.0, muv.y) * step(muv.y, 1.0);\n" +
+      "    float land = texture2D(uMap, vec2(muv.x, 1.0 - muv.y)).r * inside;\n" +
+      "    float edge = fbm(muv * 34.0 + t * 0.6);\n" +
+      "    float dissolve = uHasMouse * smoothstep(0.46, 0.0, length((uv - uMouse) * vec2(uRes.x / uRes.y, 1.0)));\n" +
+      "    land *= 1.0 - smoothstep(0.04, 0.6, dissolve * (0.72 + edge * 0.85));\n" +
+      "    land *= smoothstep(0.03, 0.38, uv.y);\n" +
+      "    float coast = smoothstep(0.04, 0.5, land) * (1.0 - smoothstep(0.5, 0.96, land));\n" +
+      "    vec3 landCol = uBase2 * 1.7 + hiMix * 0.42;\n" +
+      "    col = mix(col, landCol, land);\n" +
+      "    col += hiMix * coast * 1.2;\n" +
+      "    float shimmer = land * pow(max(band, 0.0), 1.4) * 0.75;\n" +
+      "    alpha = land * 0.52 + shimmer + coast * 0.4;\n" +
+      "  }\n" +
+      "  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.9));\n" +
       "}";
 
     function compile(type, src) {
@@ -428,6 +446,39 @@
     var uBase2 = gl.getUniformLocation(program, "uBase2");
     var uHi1 = gl.getUniformLocation(program, "uHi1");
     var uHi2 = gl.getUniformLocation(program, "uHi2");
+    var uMap = gl.getUniformLocation(program, "uMap");
+    var uHasMap = gl.getUniformLocation(program, "uHasMap");
+    var uMapScale = gl.getUniformLocation(program, "uMapScale");
+    gl.uniform1f(uHasMap, 0.0);
+    gl.uniform2f(uMapScale, 1.0, 1.0);
+
+    function fitMapScale() {
+      var canvasAspect = Math.max(canvas.width, 1) / Math.max(canvas.height, 1);
+      var mapAspect = 2.0;
+      if (canvasAspect > mapAspect) {
+        gl.uniform2f(uMapScale, canvasAspect / mapAspect, 1.0);
+      } else {
+        gl.uniform2f(uMapScale, 1.0, mapAspect / canvasAspect);
+      }
+    }
+
+    if (mapUrl) {
+      var mapImg = new Image();
+      mapImg.onload = function () {
+        var tex = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mapImg);
+        gl.uniform1i(uMap, 0);
+        gl.uniform1f(uHasMap, 1.0);
+        fitMapScale();
+      };
+      mapImg.src = mapUrl;
+    }
 
     function rgbVar(name, fallback) {
       var raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -465,6 +516,7 @@
         canvas.width = w;
         canvas.height = h;
         gl.viewport(0, 0, w, h);
+        if (mapUrl) fitMapScale();
       }
     }
 
@@ -546,7 +598,7 @@
     });
   }
 
-  initLiquidMetal("hero-metal", ".hero", "hero-metal-readout");
+  initLiquidMetal("hero-metal", ".hero", "hero-metal-readout", "assets/world-mask.png");
   initLiquidMetal("footer-metal", "footer", null);
 
   (function () {

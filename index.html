@@ -21,11 +21,11 @@
 <meta property="og:title" content="Stam — Full-stack developer">
 <meta property="og:description" content="Discord bots, desktop apps, web apps, and the databases behind them. I can make them all.">
 <meta property="og:url" content="https://stam-console.web.app/">
-<meta property="og:image" content="https://stam-console.web.app/assets/og-image-v4.png">
+<meta property="og:image" content="https://stam-console.web.app/assets/og-image-v5.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v4.png">
+<meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v5.png">
 <link rel="canonical" href="https://stam-console.web.app/">
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -48,21 +48,23 @@
   <div class="loader-masthead mono"><span>STAM / INDEPENDENT DEVELOPER</span><button id="intro-skip" type="button">Skip intro <span aria-hidden="true">↗</span></button></div>
   <div class="loader-inner">
     <div class="projection-stage">
-      <svg class="loader-logo" id="loader-logo" viewBox="0 0 64 64" role="img" aria-label="Stam symbol assembling">
-        <defs>
-          <linearGradient id="intro-upper" x1="11" y1="12" x2="51" y2="35" gradientUnits="userSpaceOnUse"><stop stop-color="#788da1"/><stop offset=".34" stop-color="#f4f7f9"/><stop offset=".68" stop-color="#a8b8c7"/><stop offset="1" stop-color="#e8dacb"/></linearGradient>
-          <linearGradient id="intro-lower" x1="12" y1="35" x2="53" y2="55" gradientUnits="userSpaceOnUse"><stop stop-color="#8b9fb1"/><stop offset=".32" stop-color="#e4ebef"/><stop offset=".7" stop-color="#c5a98d"/><stop offset="1" stop-color="#6f8397"/></linearGradient>
-          <filter id="intro-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
+      <div class="loader-mark-stage" role="img" aria-label="Stam symbol assembling">
+        <svg class="loader-traces" viewBox="0 0 64 64" aria-hidden="true">
         <g class="logo-traces" aria-hidden="true">
           <path class="logo-trace trace-1" pathLength="1" d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34"/>
           <path class="logo-trace trace-2" pathLength="1" d="M36 35C51 38 53 45 45 50C36 56 20 55 12 49"/>
           <path class="logo-trace trace-3" pathLength="1" d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34M36 35C51 38 53 45 45 50C36 56 20 55 12 49"/>
         </g>
-        <path class="logo-piece logo-piece-upper" pathLength="1" d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34" stroke="url(#intro-upper)"/>
-        <path class="logo-piece logo-piece-lower" pathLength="1" d="M36 35C51 38 53 45 45 50C36 56 20 55 12 49" stroke="url(#intro-lower)"/>
-        <path class="logo-sheen" pathLength="1" d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34M36 35C51 38 53 45 45 50C36 56 20 55 12 49"/>
-      </svg>
+        </svg>
+        <svg class="loader-logo" id="loader-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="loader-upper" x1="11" y1="12" x2="51" y2="35" gradientUnits="userSpaceOnUse"><stop stop-color="#788da1"/><stop offset=".34" stop-color="#f4f7f9"/><stop offset=".68" stop-color="#a8b8c7"/><stop offset="1" stop-color="#e8dacb"/></linearGradient>
+            <linearGradient id="loader-lower" x1="12" y1="35" x2="53" y2="55" gradientUnits="userSpaceOnUse"><stop stop-color="#8b9fb1"/><stop offset=".32" stop-color="#e4ebef"/><stop offset=".7" stop-color="#c5a98d"/><stop offset="1" stop-color="#6f8397"/></linearGradient>
+          </defs>
+          <path d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34" fill="none" stroke="url(#loader-upper)" stroke-width="8.5" stroke-linecap="square"/>
+          <path d="M36 35C51 38 53 45 45 50C36 56 20 55 12 49" fill="none" stroke="url(#loader-lower)" stroke-width="8.5" stroke-linecap="square"/>
+        </svg>
+      </div>
     </div>
     <div class="intro-caption"><span class="mono">STAM CONSOLE / PORTFOLIO</span><span class="intro-wordmark">Stam.</span></div>
     <div class="loader-log mono" id="loader-log"></div>
@@ -78,7 +80,7 @@
 
 <nav class="nav">
   <a class="nav-mark" href="#hero" aria-label="Stam home">
-    <svg class="nav-symbol" viewBox="0 0 64 64" aria-hidden="true"><path d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34"/><path d="M36 35C51 38 53 45 45 50C36 56 20 55 12 49"/></svg>
+    <svg class="nav-symbol" viewBox="0 0 64 64" aria-hidden="true"><path d="M51 16C44 11 27 10 18 16C8 23 11 31 28 34" fill="none" stroke="#dce5eb" stroke-width="8.5" stroke-linecap="square"/><path d="M36 35C51 38 53 45 45 50C36 56 20 55 12 49" fill="none" stroke="#a88f78" stroke-width="8.5" stroke-linecap="square"/></svg>
     <span>Stam.</span>
   </a>
   <ul class="nav-links" id="nav-links">

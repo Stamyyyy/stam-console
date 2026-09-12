@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="upper" x1="8" y1="12" x2="53" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#71869a"/>
+      <stop offset=".28" stop-color="#f5f8fa"/>
+      <stop offset=".56" stop-color="#a4b4c4"/>
+      <stop offset="1" stop-color="#efe2d3"/>
+    </linearGradient>
+    <linearGradient id="lower" x1="16" y1="25" x2="55" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#677b90"/>
+      <stop offset=".36" stop-color="#dfe8ee"/>
+      <stop offset=".64" stop-color="#c9ad91"/>
+      <stop offset="1" stop-color="#718599"/>
+    </linearGradient>
+  </defs>
+  <path d="M52 12H25.5c-2.9 0-5.3.8-7.5 2.6l-7.2 5.8c-4.4 3.5-3.8 9.1 1.4 11.9l18.2 9.8 8.2-8.1-19-10.2 6.1-4.6H52V12Z" fill="url(#upper)"/>
+  <path d="m33.6 21.9-8.2 8.2 19 10.2-6.1 4.6H12V52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8c4.4-3.5 3.8-9.1-1.4-11.9l-18.4-9.8Z" fill="url(#lower)"/>
+  <path d="M25.5 12H52v2H26.1c-2.7 0-4.7.6-6.6 2.1l-7.3 5.8" fill="none" stroke="#fff" stroke-opacity=".36" stroke-width=".8"/>
+  <path d="M12 52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8" fill="none" stroke="#efcfad" stroke-opacity=".3" stroke-width=".8"/>
+</svg>

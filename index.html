@@ -16,16 +16,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stam Console</title>
 <meta name="description" content="Stam — full-stack developer building Discord bots, web apps and databases, and desktop applications. Open for new projects.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23090b0f'/%3E%3Crect x='2' y='2' width='60' height='60' fill='none' stroke='%2300f0ff' stroke-width='2'/%3E%3Cpath d='M16 18 L34 32 L16 46' stroke='%2300f0ff' stroke-width='8' stroke-linecap='square' stroke-linejoin='miter' fill='none'/%3E%3Crect x='40' y='38' width='16' height='7' fill='%2300f0ff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Stam — Full-stack developer">
 <meta property="og:description" content="Discord bots, desktop apps, web apps, and the databases behind them. I can make them all.">
 <meta property="og:url" content="https://stam-console.web.app/">
-<meta property="og:image" content="https://stam-console.web.app/assets/og-image-v3.png">
+<meta property="og:image" content="https://stam-console.web.app/assets/og-image-v4.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v3.png">
+<meta name="twitter:image" content="https://stam-console.web.app/assets/og-image-v4.png">
 <link rel="canonical" href="https://stam-console.web.app/">
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -44,30 +44,31 @@
 <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
-<div id="loader" role="presentation">
-  <div class="loader-grid" aria-hidden="true"></div>
-  <div class="loader-hud mono" aria-hidden="true">
-    <span>STAM.CONSOLE // HOLO_LINK</span>
-    <span>SECTOR 01 / SIGNAL STABLE</span>
-  </div>
+<div id="loader" aria-label="Portfolio introduction">
+  <div class="loader-masthead mono"><span>STAM / INDEPENDENT DEVELOPER</span><button id="intro-skip" type="button">Skip intro <span aria-hidden="true">↗</span></button></div>
   <div class="loader-inner">
-    <div class="holo-projector" aria-hidden="true">
-      <span class="holo-ring holo-ring-a"></span>
-      <span class="holo-ring holo-ring-b"></span>
-      <span class="holo-ring holo-ring-c"></span>
-      <span class="holo-beam"></span>
-      <span class="holo-core">
-        <svg class="loader-logo" id="loader-logo" viewBox="0 0 64 64" width="76" height="76">
-          <rect class="loader-logo-frame" x="1.5" y="1.5" width="61" height="61" />
-          <path class="loader-logo-chevron" d="M16 18 L34 32 L16 46" />
-          <rect class="loader-logo-bar" x="40" y="38" width="16" height="7" />
-        </svg>
-      </span>
+    <div class="projection-stage">
+      <svg class="loader-logo" id="loader-logo" viewBox="0 0 64 64" role="img" aria-label="Stam symbol assembling">
+        <defs>
+          <linearGradient id="intro-upper" x1="8" y1="12" x2="53" y2="42" gradientUnits="userSpaceOnUse"><stop stop-color="#71869a"/><stop offset=".28" stop-color="#f5f8fa"/><stop offset=".56" stop-color="#a4b4c4"/><stop offset="1" stop-color="#efe2d3"/></linearGradient>
+          <linearGradient id="intro-lower" x1="16" y1="25" x2="55" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#677b90"/><stop offset=".36" stop-color="#dfe8ee"/><stop offset=".64" stop-color="#c9ad91"/><stop offset="1" stop-color="#718599"/></linearGradient>
+          <filter id="intro-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g class="logo-traces" aria-hidden="true">
+          <path class="logo-trace trace-1" d="M52 12H25.5c-2.9 0-5.3.8-7.5 2.6l-7.2 5.8c-4.4 3.5-3.8 9.1 1.4 11.9l18.2 9.8 8.2-8.1-19-10.2 6.1-4.6H52V12Z"/>
+          <path class="logo-trace trace-2" d="m33.6 21.9-8.2 8.2 19 10.2-6.1 4.6H12V52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8c4.4-3.5 3.8-9.1-1.4-11.9l-18.4-9.8Z"/>
+          <path class="logo-trace trace-3" d="M52 12H25.5c-2.9 0-5.3.8-7.5 2.6l-7.2 5.8c-4.4 3.5-3.8 9.1 1.4 11.9l18.2 9.8 8.2-8.1-19-10.2 6.1-4.6H52V12Zm-18.4 9.9-8.2 8.2 19 10.2-6.1 4.6H12V52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8c4.4-3.5 3.8-9.1-1.4-11.9l-18.4-9.8Z"/>
+        </g>
+        <path class="logo-piece logo-piece-upper" d="M52 12H25.5c-2.9 0-5.3.8-7.5 2.6l-7.2 5.8c-4.4 3.5-3.8 9.1 1.4 11.9l18.2 9.8 8.2-8.1-19-10.2 6.1-4.6H52V12Z" fill="url(#intro-upper)"/>
+        <path class="logo-piece logo-piece-lower" d="m33.6 21.9-8.2 8.2 19 10.2-6.1 4.6H12V52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8c4.4-3.5 3.8-9.1-1.4-11.9l-18.4-9.8Z" fill="url(#intro-lower)"/>
+        <path class="logo-sheen" d="M25.5 12H52v2H26.1c-2.7 0-4.7.6-6.6 2.1l-7.3 5.8M12 52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8"/>
+      </svg>
     </div>
-    <div class="holo-label mono"><span>IDENTITY MATRIX</span><span>STAM</span></div>
+    <div class="intro-caption"><span class="mono">STAM CONSOLE / PORTFOLIO</span><span class="intro-wordmark">Stam.</span></div>
     <div class="loader-log mono" id="loader-log"></div>
-    <div class="holo-progress" aria-hidden="true"><span></span></div>
+    <div class="intro-rule" aria-hidden="true"><span></span></div>
   </div>
+  <span class="intro-footnote mono">DISCORD BOTS / WEB / DESKTOP</span>
 </div>
 
 <div id="scroll-progress" aria-hidden="true"></div>
@@ -76,7 +77,10 @@
 <a class="skip-link" href="#main">Skip to content</a>
 
 <nav class="nav">
-  <span class="nav-mark">Stam<sup>&reg;</sup></span>
+  <a class="nav-mark" href="#hero" aria-label="Stam home">
+    <svg class="nav-symbol" viewBox="0 0 64 64" aria-hidden="true"><path d="M52 12H25.5c-2.9 0-5.3.8-7.5 2.6l-7.2 5.8c-4.4 3.5-3.8 9.1 1.4 11.9l18.2 9.8 8.2-8.1-19-10.2 6.1-4.6H52V12Z"/><path d="m33.6 21.9-8.2 8.2 19 10.2-6.1 4.6H12V52h26.7c2.9 0 5.3-.8 7.5-2.6l7.2-5.8c4.4-3.5 3.8-9.1-1.4-11.9l-18.4-9.8Z"/></svg>
+    <span>Stam.</span>
+  </a>
   <ul class="nav-links" id="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#offer">What I do</a></li>
@@ -96,20 +100,17 @@
     <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 1020.354 15.354z" fill="currentColor"/></svg>
     <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="4.9" y1="4.9" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.1" y2="4.9"/></g></svg>
   </button>
-  <a class="nav-cta" href="#contact">Get in touch</a>
+  <a class="nav-cta" href="#contact">Start a project</a>
 </nav>
 
 <main id="main">
   <section class="hero" id="hero">
     <div class="hero-viewport" aria-hidden="true">
       <canvas id="hero-metal"></canvas>
-      <canvas id="hero-grid"></canvas>
       <span class="hv-corner" data-pos="tl"></span>
       <span class="hv-corner" data-pos="tr"></span>
       <span class="hv-corner" data-pos="bl"></span>
       <span class="hv-corner" data-pos="br"></span>
-      <span class="hero-viewport-label mono">[ CORE // LIQUID-METAL.SYS ]</span>
-      <span class="hero-viewport-readout mono" id="hero-metal-readout">HEAT 00%</span>
     </div>
     <div class="hero-inner">
       <span class="eyebrow">Full-stack developer</span>
@@ -119,8 +120,8 @@
       <p class="type-line mono" id="hero-typed" data-text="&gt; tell me what you need built."><span class="type-cursor" aria-hidden="true"></span></p>
       <p class="hero-lede reveal-fade" id="hero-lede">Discord bots, desktop apps, web apps, and the databases behind them. I can make them all!</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#contact">Get in touch</a>
-        <a class="btn" href="#offer">What I do</a>
+        <a class="btn btn-primary" href="#contact">Start a project</a>
+        <a class="btn" href="#work">See the work</a>
       </div>
       <div class="now-status">
         <p class="now-line"><span class="live-dot" aria-hidden="true"></span>Currently open for new projects</p>
@@ -243,7 +244,7 @@
       <button class="filter-btn" data-filter="electron" type="button">Electron</button>
     </div>
     <div class="projects stagger" id="projects-grid">
-      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="JARVIS Boot Intro card — press Enter for a fact">
+      <div class="project-card" data-category="electron">
         <div class="project-content">
           <div class="project-top">
             <span class="project-title">JARVIS Boot Intro</span>
@@ -275,16 +276,10 @@
             <source src="videos/jarvis.mp4" type="video/mp4">
           </video>
         </div>
-        <span class="flip-hint">Click for a fact</span>
-        <div class="card-back">
-          <div>
-            <div class="card-back-label">Fun fact</div>
-            <p>The startup sound isn't a file, it's generated live with the Web Audio API. Same tech behind the sound toggle on this page.</p>
-          </div>
-        </div>
+        <details class="project-note"><summary>Technical note</summary><p>The startup sound isn't a file, it's generated live with the Web Audio API. Same tech behind the sound toggle on this page.</p></details>
       </div>
 
-      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Specter card — press Enter for a fact">
+      <div class="project-card" data-category="electron">
         <div class="project-content">
           <div class="project-top">
             <div>
@@ -319,16 +314,10 @@
             <source src="videos/specter.mp4" type="video/mp4">
           </video>
         </div>
-        <span class="flip-hint">Click for a fact</span>
-        <div class="card-back">
-          <div>
-            <div class="card-back-label">Fun fact</div>
-            <p>Every process's executable gets checked live with Get-AuthenticodeSignature, so unsigned binaries get flagged with a warning badge, something stock Task Manager doesn't surface without a third-party tool.</p>
-          </div>
-        </div>
+        <details class="project-note"><summary>Technical note</summary><p>Every process's executable gets checked live with Get-AuthenticodeSignature, so unsigned binaries get flagged with a warning badge, something stock Task Manager doesn't surface without a third-party tool.</p></details>
       </div>
 
-      <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Wraith card — press Enter for a fact">
+      <div class="project-card" data-category="electron">
         <div class="project-content">
           <div class="project-top">
             <div>
@@ -363,18 +352,12 @@
             <source src="videos/wraith.mp4" type="video/mp4">
           </video>
         </div>
-        <span class="flip-hint">Click for a fact</span>
-        <div class="card-back">
-          <div>
-            <div class="card-back-label">Fun fact</div>
-            <p>Its file search is a plain JS file walk, not a shell-out to findstr or grep, so there's no command-injection surface hiding in the search box.</p>
-          </div>
-        </div>
+        <details class="project-note"><summary>Technical note</summary><p>Its file search is a plain JS file walk, not a shell-out to findstr or grep, so there's no command-injection surface hiding in the search box.</p></details>
       </div>
 
       <div class="projects-collapse" id="projects-collapse">
         <div class="projects-collapse-inner">
-          <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Séance card — press Enter for a fact">
+          <div class="project-card" data-category="electron">
             <div class="project-content">
               <div class="project-top">
                 <div>
@@ -409,16 +392,10 @@
                 <source src="videos/seance.mp4" type="video/mp4">
               </video>
             </div>
-            <span class="flip-hint">Click for a fact</span>
-            <div class="card-back">
-              <div>
-                <div class="card-back-label">Fun fact</div>
-                <p>Its background test runner refuses to double-run the same command from two terminals at once, even across the WSL/Windows boundary, which is trickier than it sounds: a process ID means something different to each side, so it can't just ask "is that pid still alive."</p>
-              </div>
-            </div>
+            <details class="project-note"><summary>Technical note</summary><p>Its background test runner refuses to double-run the same command from two terminals at once, even across the WSL/Windows boundary, which is trickier than it sounds: a process ID means something different to each side, so it can't just ask "is that pid still alive."</p></details>
           </div>
     
-          <div class="project-card" data-category="electron" tabindex="0" role="button" aria-label="Revenant card — press Enter for a fact">
+          <div class="project-card" data-category="electron">
             <div class="project-content">
               <div class="project-top">
                 <div>
@@ -453,16 +430,10 @@
                 <source src="videos/revenant.mp4" type="video/mp4">
               </video>
             </div>
-            <span class="flip-hint">Click for a fact</span>
-            <div class="card-back">
-              <div>
-                <div class="card-back-label">Fun fact</div>
-                <p>Live updates trust the USN Journal the instant an event is seen rather than re-reading the file record, because a raw volume read of a just-deleted file still showed it as in-use 4+ seconds later, while the journal entry was already there.</p>
-              </div>
-            </div>
+            <details class="project-note"><summary>Technical note</summary><p>Live updates trust the USN Journal the instant an event is seen rather than re-reading the file record, because a raw volume read of a just-deleted file still showed it as in-use 4+ seconds later, while the journal entry was already there.</p></details>
           </div>
 
-          <div class="project-card" data-category="web bot" tabindex="0" role="button" aria-label="Frontline: Shattered Steel card — press Enter for a fact">
+          <div class="project-card" data-category="web bot">
             <div class="project-content">
               <div class="project-top">
                 <span class="project-title">Frontline: Shattered Steel</span>
@@ -495,13 +466,7 @@
                 <source src="videos/frontline.mp4" type="video/mp4">
               </video>
             </div>
-            <span class="flip-hint">Click for a fact</span>
-            <div class="card-back">
-              <div>
-                <div class="card-back-label">Fun fact</div>
-                <p>The bot and the game are built by two different people, but I wrote 100% of the code myself.</p>
-              </div>
-            </div>
+            <details class="project-note"><summary>Technical note</summary><p>The bot and the game are built by two different people, but I wrote 100% of the code myself.</p></details>
           </div>
 
         </div>
@@ -559,17 +524,6 @@
     </div>
   </section>
 
-  <section id="reviews" class="panel reveal" hidden>
-    <div class="panel-head">
-      <h2 class="panel-title">What people say</h2>
-      <p class="panel-sub">Reviews from people I've actually worked with. Nothing here is made up, so it's short for now.</p>
-    </div>
-    <div class="reviews-empty">
-      <p>I'm still collecting feedback from clients and collaborators. If you've worked with me on Imperial Intelligence, Frontline, or anything else, I'd genuinely appreciate a few lines about what that was like.</p>
-      <button class="btn btn-small" type="button" data-open-contact-form>Leave a review</button>
-    </div>
-  </section>
-
   <section id="faq" class="panel reveal">
     <div class="panel-head">
       <h2 class="panel-title">Questions people actually ask</h2>
@@ -600,11 +554,6 @@
       <p class="panel-sub">Send me what you have in mind. I'm mainly looking for people who know what they're doing and care about the same kind of ideas I do, and I'll tell you honestly if I'm the right fit.</p>
     </div>
     <div class="contact-grid stagger">
-      <div class="contact-card">
-        <span class="eyebrow">Message</span>
-        <span class="contact-value">Skip the email client</span>
-        <button class="btn btn-primary btn-small" type="button" data-open-contact-form>Send a message</button>
-      </div>
       <div class="contact-card">
         <span class="eyebrow">Discord (preferred)</span>
         <span class="contact-value" id="discord-value">stamyyyy</span>
@@ -675,7 +624,7 @@
 <div class="terms-scrim" id="terms-scrim" hidden>
   <div class="terms-panel" role="dialog" aria-modal="true" aria-label="Terms">
     <div class="terms-header">
-      <span class="terms-title">Terms</span>
+      <span class="terms-heading"><span class="terms-overline mono">WORKING AGREEMENT</span><span class="terms-title">Terms</span></span>
       <button class="terms-close" id="terms-close" type="button" aria-label="Close">&times;</button>
     </div>
     <div class="terms-body">
@@ -763,18 +712,17 @@
 <div class="terms-scrim" id="privacy-scrim" hidden>
   <div class="terms-panel" role="dialog" aria-modal="true" aria-label="Privacy">
     <div class="terms-header">
-      <span class="terms-title">Privacy</span>
+      <span class="terms-heading"><span class="terms-overline mono">SITE DATA</span><span class="terms-title">Privacy</span></span>
       <button class="terms-close" id="privacy-close" type="button" aria-label="Close">&times;</button>
     </div>
     <div class="terms-body">
-      <p class="terms-preamble">This is a plain description of what this site actually does with data, not a legal document drafted by a lawyer. I'm an individual based in Greece (EU), not a registered company, so this is written from that position.</p>
+      <p class="terms-preamble">This is a plain description of what this portfolio does with data. It does not run analytics, advertising trackers, or a contact-form service.</p>
 
       <div class="terms-clause">
         <h3><span class="terms-num">1.</span> What this site collects</h3>
         <ol class="terms-sublist">
-          <li>The contact form asks for your name, email, and message. That's sent to Web3Forms (a third-party form-delivery service, api.web3forms.com) purely to forward it to me as an email. I don't store it anywhere else, sell it, or use it for anything other than replying to you.</li>
           <li>The site remembers your light/dark theme choice in your browser's local storage. That never leaves your device and I never see it.</li>
-          <li>That's everything. No analytics, no ad trackers, no tracking cookies, no third-party embeds beyond the form service above.</li>
+          <li>That is the only preference this site stores. There are no analytics, advertising trackers, tracking cookies, or third-party embeds.</li>
         </ol>
       </div>
 
@@ -788,7 +736,7 @@
 
       <div class="terms-clause">
         <h3><span class="terms-num">3.</span> Your rights</h3>
-        <p>If you're in the EU/EEA or UK, GDPR gives you the right to ask what I have on you, correct it, or have it deleted. Since email isn't set up on this site right now, the way to reach me about this is Discord (stamyyyy) or the contact form itself.</p>
+        <p>If you need to ask about privacy, reach me on Discord at <strong>stamyyyy</strong>. This site itself does not collect contact details.</p>
       </div>
 
       <div class="terms-clause">
@@ -799,40 +747,8 @@
   </div>
 </div>
 
-<div class="terms-scrim" id="contact-form-scrim" hidden>
-  <div class="terms-panel" role="dialog" aria-modal="true" aria-label="Send a message">
-    <div class="terms-header">
-      <span class="terms-title">Send a message</span>
-      <button class="terms-close" id="contact-form-close" type="button" aria-label="Close">&times;</button>
-    </div>
-    <div class="terms-body">
-      <form class="contact-form" id="contact-form" novalidate>
-        <div class="form-field">
-          <label class="form-label" for="contact-form-name">Name</label>
-          <input class="form-input" type="text" id="contact-form-name" name="name" autocomplete="name" required>
-        </div>
-        <div class="form-field">
-          <label class="form-label" for="contact-form-email">Email</label>
-          <input class="form-input" type="email" id="contact-form-email" name="email" autocomplete="email" required>
-        </div>
-        <div class="form-field">
-          <label class="form-label" for="contact-form-message">Message</label>
-          <textarea class="form-textarea" id="contact-form-message" name="message" required></textarea>
-        </div>
-        <div class="form-field form-honeypot" aria-hidden="true">
-          <label class="form-label" for="contact-form-botcheck">Leave this field empty</label>
-          <input class="form-input" type="text" id="contact-form-botcheck" name="botcheck" tabindex="-1" autocomplete="off">
-        </div>
-        <div class="form-actions">
-          <span class="form-status" id="contact-form-status" role="status" aria-live="polite"></span>
-          <button class="btn btn-primary" type="submit" id="contact-form-submit">Send</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <script src="assets/js/code-typer.js" defer></script>
+<script src="assets/js/visuals.js" defer></script>
 <script src="assets/js/site.js" defer></script>
 
 </body>

@@ -4,15 +4,6 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.__stamAudio = { level: 0, active: false };
 
-  function outsideContact(e) {
-    return !e.target.closest(".contact-grid") && !e.target.closest("#contact-form-scrim");
-  }
-  ["copy", "cut", "contextmenu"].forEach(function (evt) {
-    document.addEventListener(evt, function (e) {
-      if (outsideContact(e)) e.preventDefault();
-    });
-  });
-
   var projectVideos = document.querySelectorAll(".project-video");
   if (reduceMotion) {
     projectVideos.forEach(function (video) {
@@ -160,17 +151,12 @@
       cancelBootLog();
       loader.classList.add("is-hidden");
       try { sessionStorage.setItem("stam-intro-seen", "1"); } catch (e) {}
-      setTimeout(function () { loader.style.display = "none"; }, 400);
+      setTimeout(function () { loader.style.display = "none"; }, 700);
       startHeroIntro();
     }
 
-    runBootLog([
-      "> INITIALIZING STAM_CONSOLE",
-      "> authenticating... GRANTED",
-      "> mounting modules... 12 OK",
-      "> render pipeline... ONLINE",
-      "> STATUS: READY"
-    ], finish, 750);
+    // A short signature animation, not a simulated loading process.
+    setTimeout(finish, 3200);
 
     loader.addEventListener("click", finish);
     window.addEventListener("keydown", finish, { once: true });
@@ -340,290 +326,10 @@
   }
 
   function initLiquidMetal(canvasId, containerSelector, readoutId, mapUrl) {
-    var canvas = document.getElementById(canvasId);
-    var heroSection = document.querySelector(containerSelector);
-    var readout = readoutId ? document.getElementById(readoutId) : null;
-    if (!canvas || !heroSection) return;
-
-    var lowPower = (window.matchMedia && window.matchMedia("(max-width: 760px), (pointer: coarse)").matches);
-    var OCTAVES = lowPower ? 3 : 5;
-
-    var gl = canvas.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: false, powerPreference: "low-power" }) ||
-      canvas.getContext("experimental-webgl", { antialias: false, alpha: true, premultipliedAlpha: false });
-    if (!gl) return;
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.clearColor(0, 0, 0, 0);
-
-    var VERT = "attribute vec2 aPos;\n" +
-      "void main() { gl_Position = vec4(aPos, 0.0, 1.0); }";
-
-    var FRAG = "precision mediump float;\n" +
-      "uniform vec2 uRes;\n" +
-      "uniform float uTime;\n" +
-      "uniform vec2 uMouse;\n" +
-      "uniform float uHasMouse;\n" +
-      "uniform float uTurb;\n" +
-      "uniform vec3 uBase1;\n" +
-      "uniform vec3 uBase2;\n" +
-      "uniform vec3 uHi1;\n" +
-      "uniform vec3 uHi2;\n" +
-      "uniform sampler2D uMap;\n" +
-      "uniform float uHasMap;\n" +
-      "uniform vec2 uMapScale;\n" +
-      "float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }\n" +
-      "float noise(vec2 p) {\n" +
-      "  vec2 i = floor(p); vec2 f = fract(p);\n" +
-      "  float a = hash(i), b = hash(i + vec2(1.0, 0.0));\n" +
-      "  float c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));\n" +
-      "  vec2 u = f * f * (3.0 - 2.0 * f);\n" +
-      "  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;\n" +
-      "}\n" +
-      "float fbm(vec2 p) {\n" +
-      "  float v = 0.0; float amp = 0.5;\n" +
-      "  for (int i = 0; i < " + OCTAVES + "; i++) { v += amp * noise(p); p *= 2.02; amp *= 0.5; }\n" +
-      "  return v;\n" +
-      "}\n" +
-      "void main() {\n" +
-      "  vec2 uv = gl_FragCoord.xy / uRes.xy;\n" +
-      "  vec2 p = uv * vec2(uRes.x / uRes.y, 1.0) * 3.0;\n" +
-      "  float t = uTime * (0.05 + uTurb * 0.1);\n" +
-      "  vec2 mouseOff = uv - uMouse;\n" +
-      "  float mouseDist = length(mouseOff);\n" +
-      "  float mouseDent = uHasMouse * exp(-mouseDist * 6.0) * 0.6;\n" +
-      "  vec2 q = vec2(fbm(p + t), fbm(p + vec2(5.2, 1.3) + t));\n" +
-      "  vec2 r = vec2(fbm(p + 4.0 * q + vec2(1.7, 9.2) + t * 1.3), fbm(p + 4.0 * q + vec2(8.3, 2.8) + t * 1.7));\n" +
-      "  r -= mouseOff * mouseDent;\n" +
-      "  float flow = fbm(p + r * 3.0);\n" +
-      "  float eps = 0.015;\n" +
-      "  float fx = fbm(p + r * 3.0 + vec2(eps, 0.0)) - flow;\n" +
-      "  float fy = fbm(p + r * 3.0 + vec2(0.0, eps)) - flow;\n" +
-      "  vec3 normal = normalize(vec3(-fx, -fy, 0.4));\n" +
-      "  float fresnel = pow(1.0 - max(normal.z, 0.0), 2.5);\n" +
-      "  float band = smoothstep(0.35, 0.75, flow) - smoothstep(0.75, 0.95, flow) * 0.6 + fresnel * 0.5;\n" +
-      "  vec3 col = mix(uBase1, uBase2, clamp(flow * 1.4, 0.0, 1.0));\n" +
-      "  vec3 hiMix = mix(uHi1, uHi2, sin(t * 2.0 + flow * 6.0) * 0.5 + 0.5);\n" +
-      "  col += hiMix * pow(max(band, 0.0), 2.0) * (0.5 + uTurb * 0.5);\n" +
-      "  float vig = smoothstep(1.1, 0.35, length(uv - 0.5) * 1.4);\n" +
-      "  float alpha = clamp(pow(max(band, 0.0), 1.6) * (0.85 + uTurb * 0.3), 0.0, 0.82) + flow * 0.05;\n" +
-      "  alpha *= mix(0.35, 1.0, vig);\n" +
-      "  if (uHasMap > 0.5) {\n" +
-      "    vec2 muv = (uv - 0.5) * uMapScale + 0.5;\n" +
-      "    float inside = step(0.0, muv.x) * step(muv.x, 1.0) * step(0.0, muv.y) * step(muv.y, 1.0);\n" +
-      "    float land = texture2D(uMap, vec2(muv.x, 1.0 - muv.y)).r * inside;\n" +
-      "    float edge = fbm(muv * 34.0 + t * 0.6);\n" +
-      "    float dissolve = uHasMouse * smoothstep(0.46, 0.0, length((uv - uMouse) * vec2(uRes.x / uRes.y, 1.0)));\n" +
-      "    land *= 1.0 - smoothstep(0.04, 0.6, dissolve * (0.72 + edge * 0.85));\n" +
-      "    land *= smoothstep(0.0, 0.10, uv.y);\n" +
-      "    float coast = smoothstep(0.04, 0.5, land) * (1.0 - smoothstep(0.5, 0.96, land));\n" +
-      "    vec3 landCol = uBase2 * 1.45 + hiMix * 0.36;\n" +
-      "    col = mix(col, landCol, land);\n" +
-      "    col += hiMix * coast * 1.0;\n" +
-      "    float shimmer = land * pow(max(band, 0.0), 1.4) * 0.6;\n" +
-      "    alpha = land * 0.44 + shimmer + coast * 0.3;\n" +
-      "  }\n" +
-      "  gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.9));\n" +
-      "}";
-
-    function compile(type, src) {
-      var sh = gl.createShader(type);
-      gl.shaderSource(sh, src);
-      gl.compileShader(sh);
-      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-        gl.deleteShader(sh);
-        return null;
-      }
-      return sh;
-    }
-
-    var vs = compile(gl.VERTEX_SHADER, VERT);
-    var fs = compile(gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return;
-    var program = gl.createProgram();
-    gl.attachShader(program, vs);
-    gl.attachShader(program, fs);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
-    gl.useProgram(program);
-
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    var aPos = gl.getAttribLocation(program, "aPos");
-    gl.enableVertexAttribArray(aPos);
-    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
-    var uRes = gl.getUniformLocation(program, "uRes");
-    var uTime = gl.getUniformLocation(program, "uTime");
-    var uMouse = gl.getUniformLocation(program, "uMouse");
-    var uHasMouse = gl.getUniformLocation(program, "uHasMouse");
-    var uTurb = gl.getUniformLocation(program, "uTurb");
-    var uBase1 = gl.getUniformLocation(program, "uBase1");
-    var uBase2 = gl.getUniformLocation(program, "uBase2");
-    var uHi1 = gl.getUniformLocation(program, "uHi1");
-    var uHi2 = gl.getUniformLocation(program, "uHi2");
-    var uMap = gl.getUniformLocation(program, "uMap");
-    var uHasMap = gl.getUniformLocation(program, "uHasMap");
-    var uMapScale = gl.getUniformLocation(program, "uMapScale");
-    gl.uniform1f(uHasMap, 0.0);
-    gl.uniform2f(uMapScale, 1.0, 1.0);
-
-    var mapAspect = 2.0;
-
-    function fitMapScale() {
-      var canvasAspect = Math.max(canvas.width, 1) / Math.max(canvas.height, 1);
-      if (canvasAspect > mapAspect) {
-        gl.uniform2f(uMapScale, 1.0, mapAspect / canvasAspect);
-      } else {
-        gl.uniform2f(uMapScale, canvasAspect / mapAspect, 1.0);
-      }
-    }
-
-    if (mapUrl) {
-      var mapImg = new Image();
-      mapImg.onload = function () {
-        var tex = gl.createTexture();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mapImg);
-        mapAspect = mapImg.width / mapImg.height;
-        gl.uniform1i(uMap, 0);
-        gl.uniform1f(uHasMap, 1.0);
-        fitMapScale();
-      };
-      mapImg.src = mapUrl;
-    }
-
-    function rgbVar(name, fallback) {
-      var raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-      var parts = raw.split(",").map(function (n) { return parseFloat(n) / 255; });
-      return parts.length === 3 && !parts.some(isNaN) ? parts : fallback;
-    }
-
-    function applyThemeColors() {
-      var base1 = rgbVar("--metal-1-rgb", [0.02, 0.023, 0.03]);
-      var base2 = rgbVar("--metal-2-rgb", [0.24, 0.26, 0.29]);
-      var hi1 = rgbVar("--neon-1-rgb", [1, 0.16, 0.16]);
-      var hi2 = rgbVar("--neon-2-rgb", [1, 0.16, 0.16]);
-      gl.uniform3f(uBase1, base1[0], base1[1], base1[2]);
-      gl.uniform3f(uBase2, base2[0], base2[1], base2[2]);
-      gl.uniform3f(uHi1, hi1[0], hi1[1], hi1[2]);
-      gl.uniform3f(uHi2, hi2[0], hi2[1], hi2[2]);
-    }
-    applyThemeColors();
-
-    var themeObserver = new MutationObserver(applyThemeColors);
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-
-    var dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 1.5);
-    var mouse = { x: 0.5, y: 0.5, has: 0 };
-    var visible = true;
-    var onScreen = true;
-    var tabVisible = !document.hidden;
-    var raf = null;
-    var startTime = null;
-    var lastReadout = -1;
-
-    function resize() {
-      var rect = canvas.getBoundingClientRect();
-      var w = Math.max(1, Math.floor(rect.width * dpr));
-      var h = Math.max(1, Math.floor(rect.height * dpr));
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w;
-        canvas.height = h;
-        gl.viewport(0, 0, w, h);
-        if (mapUrl) fitMapScale();
-      }
-    }
-
-    function draw(time) {
-      if (startTime === null) startTime = time;
-      var t = (time - startTime) / 1000;
-      var audio = (window.__stamAudio && window.__stamAudio.level) || 0;
-      var idleTurb = 0.12 + Math.sin(t * 0.15) * 0.05;
-      var turb = Math.min(1, idleTurb + audio * 0.9);
-
-      gl.uniform2f(uRes, canvas.width, canvas.height);
-      gl.uniform1f(uTime, t);
-      gl.uniform2f(uMouse, mouse.x, 1.0 - mouse.y);
-      gl.uniform1f(uHasMouse, mouse.has);
-      gl.uniform1f(uTurb, turb);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-      if (readout) {
-        var pct = Math.round(turb * 100);
-        if (pct !== lastReadout) {
-          lastReadout = pct;
-          readout.textContent = "HEAT " + (pct < 10 ? "0" : "") + pct + "%";
-        }
-      }
-    }
-
-    // resize is driven by ResizeObserver, not called per-frame -- a forced
-    // layout read (getBoundingClientRect) on every rAF tick is wasted work
-    // on a continuously-running background.
-    function loop(time) {
-      if (!visible) { raf = null; return; }
-      draw(time);
-      raf = requestAnimationFrame(loop);
-    }
-
-    resize();
-
-    var ro = new ResizeObserver(function () {
-      resize();
-      if (reduceMotion) { startTime = 0; draw(2400); }
-    });
-    ro.observe(canvas);
-
-    if (reduceMotion) {
-      startTime = 0;
-      draw(2400);
-      canvas.classList.add("is-ready");
-      return;
-    }
-
-    canvas.classList.add("is-ready");
-    loop(performance.now());
-
-    heroSection.addEventListener("pointermove", function (e) {
-      var rect = canvas.getBoundingClientRect();
-      mouse.x = (e.clientX - rect.left) / rect.width;
-      mouse.y = (e.clientY - rect.top) / rect.height;
-      mouse.has = 1;
-    });
-    heroSection.addEventListener("pointerleave", function () {
-      mouse.has = 0;
-    });
-
-    function syncVisible() {
-      visible = onScreen && tabVisible;
-      if (visible && !raf) {
-        startTime = null;
-        raf = requestAnimationFrame(loop);
-      }
-    }
-
-    if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function (entries) {
-        onScreen = entries[0].isIntersecting;
-        syncVisible();
-      }, { threshold: 0 });
-      io.observe(canvas);
-    }
-
-    document.addEventListener("visibilitychange", function () {
-      tabVisible = !document.hidden;
-      syncVisible();
-    });
+    if (window.StamVisuals) window.StamVisuals.liquid(canvasId, containerSelector, mapUrl);
   }
 
-  initLiquidMetal("hero-metal", ".hero", "hero-metal-readout", "assets/world-mask.png");
+  initLiquidMetal("hero-metal", ".hero", "hero-metal-readout", null);
   initLiquidMetal("footer-metal", "footer", null);
 
   (function () {
@@ -944,26 +650,33 @@
       var scrollTop = window.scrollY || document.documentElement.scrollTop;
       var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       var pct = height > 0 ? (scrollTop / height) * 100 : 0;
-      bar.style.width = pct + "%";
+      bar.style.setProperty("--page-progress", Math.max(0, Math.min(1, pct / 100)));
     }
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
     update();
   })();
 
-  document.querySelectorAll(".project-card").forEach(function (card) {
-    card.addEventListener("click", function (e) {
-      if (e.target.closest("a, button")) return;
-      card.classList.toggle("is-flipped");
-    });
-    card.addEventListener("keydown", function (e) {
-      if (e.target.closest("a, button")) return;
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        card.classList.toggle("is-flipped");
-      }
-    });
-  });
+  (function () {
+    var links = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+    if (!links.length || !("IntersectionObserver" in window)) return;
+    var byId = new Map(links.map(function (link) { return [link.getAttribute("href").slice(1), link]; }));
+    var sections = Array.from(document.querySelectorAll("main section[id]")).filter(function (section) { return byId.has(section.id); });
+    function setCurrent(id) {
+      links.forEach(function (link) {
+        var active = link === byId.get(id);
+        link.classList.toggle("is-current", active);
+        if (active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      });
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (entry) { return entry.isIntersecting; })
+        .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; });
+      if (visible[0]) setCurrent(visible[0].target.id);
+    }, { rootMargin: "-28% 0px -56% 0px", threshold: [0, .1, .35, .6] });
+    sections.forEach(function (section) { observer.observe(section); });
+  })();
 
   (function () {
     var mediaBlocks = document.querySelectorAll(".project-media");
@@ -1115,85 +828,15 @@
     });
   })();
 
-  (function () {
-    var triggers = document.querySelectorAll("[data-open-contact-form]");
-    var scrim = document.getElementById("contact-form-scrim");
-    var closeBtn = document.getElementById("contact-form-close");
-    var form = document.getElementById("contact-form");
-    var status = document.getElementById("contact-form-status");
-    var submitBtn = document.getElementById("contact-form-submit");
-    var nameField = document.getElementById("contact-form-name");
-    if (!triggers.length || !scrim || !closeBtn || !form) return;
-
-    var WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
-    var lastFocused = null;
-
-    function setStatus(text, state) {
-      status.textContent = text;
-      if (state) status.setAttribute("data-state", state);
-      else status.removeAttribute("data-state");
-    }
-    function open(e) {
-      lastFocused = (e && e.currentTarget) || null;
-      scrim.hidden = false;
-      setStatus("", null);
-      if (nameField) nameField.focus();
-    }
-    function close() {
-      scrim.hidden = true;
-      if (lastFocused) lastFocused.focus();
-    }
-
-    triggers.forEach(function (t) { t.addEventListener("click", open); });
-    closeBtn.addEventListener("click", close);
-    scrim.addEventListener("click", function (e) { if (e.target === scrim) close(); });
-    window.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !scrim.hidden) close();
+  if (!reduceMotion) {
+    document.querySelectorAll(".terms-panel").forEach(function (panel) {
+      panel.addEventListener("pointermove", function (event) {
+        var bounds = panel.getBoundingClientRect();
+        panel.style.setProperty("--panel-x", ((event.clientX - bounds.left) / bounds.width) * 100 + "%");
+        panel.style.setProperty("--panel-y", ((event.clientY - bounds.top) / bounds.height) * 100 + "%");
+      }, { passive: true });
     });
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      var botcheck = form.querySelector('[name="botcheck"]');
-      if (botcheck && botcheck.value) return; // silently drop bot submissions
-
-      if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY") {
-        setStatus("Form isn't wired up yet — email me directly for now.", "error");
-        return;
-      }
-
-      var payload = {
-        access_key: WEB3FORMS_ACCESS_KEY,
-        subject: "New message from stam-console",
-        name: form.querySelector('[name="name"]').value,
-        email: form.querySelector('[name="email"]').value,
-        message: form.querySelector('[name="message"]').value
-      };
-
-      submitBtn.disabled = true;
-      setStatus("Sending...", null);
-
-      fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload)
-      })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          submitBtn.disabled = false;
-          if (data.success) {
-            setStatus("Message sent. I'll get back to you soon.", "ok");
-            form.reset();
-          } else {
-            setStatus("Something went wrong. Try emailing me directly.", "error");
-          }
-        })
-        .catch(function () {
-          submitBtn.disabled = false;
-          setStatus("Network error. Try emailing me directly.", "error");
-        });
-    });
-  })();
+  }
 
   (function () {
     var scrim = document.getElementById("cmdk-scrim");
@@ -1224,7 +867,7 @@
       { label: "Go to Skills", hint: "Section", action: function () { scrollToId("skills"); } },
       { label: "Go to FAQ", hint: "Section", action: function () { scrollToId("faq"); } },
       { label: "Go to Contact", hint: "Section", action: function () { scrollToId("contact"); } },
-      { label: "Send a message", hint: "Modal", action: function () { var t = document.querySelector("[data-open-contact-form]"); if (t) t.click(); } },
+      { label: "Contact on Discord", hint: "Copy stamyyyy", action: function () { copyText("stamyyyy"); scrollToId("contact"); } },
       { label: "Read my terms", hint: "Modal", action: function () { var t = document.querySelector("[data-open-terms]"); if (t) t.click(); } },
       { label: "Read privacy notice", hint: "Modal", action: function () { var t = document.querySelector("[data-open-privacy]"); if (t) t.click(); } },
       { label: "Open GitHub", hint: "github.com/Stamyyyy", action: function () { window.open("https://github.com/Stamyyyy", "_blank", "noopener"); } },

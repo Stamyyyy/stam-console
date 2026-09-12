@@ -83,17 +83,11 @@
         steel+=vec3(.80,.87,.94)*strip*.68;
         steel+=vec3(.16,.23,.34)*pow(max(n.y,0.),7.)*.28;
         steel+=vec3(.34,.19,.09)*pow(max(1.-n.x*n.x,0.),9.)*.18;
-        vec2 muv=((uv+bend)-.5)*uMapScale+.5;
-        float inside=step(0.,muv.x)*step(muv.x,1.)*step(0.,muv.y)*step(muv.y,1.);
-        float land=texture2D(uMap,vec2(muv.x,1.-muv.y)).r*inside;
-        vec2 q=uv-vec2(.64,.51);
-        float mass=.54-length(q*vec2(.80,1.18))+(h-.5)*.62+.075*sin(q.x*8.+t*7.);
-        float fluid=smoothstep(-.04,.075,mass);
-        float mask=mix(fluid,land,uHasMap);
-        float edge=1.-smoothstep(.56,.92,length((uv-.5)*vec2(.82,1.)));
         vec3 dark=vec3(.043,.047,.055);
-        vec3 col=mix(dark,steel,mask*edge*.8);
-        if(uLight>.5)col=mix(vec3(.957,.957,.941),vec3(.25,.3,.36)+steel*.2,mask*edge*.7);
+        float presence=mix(.22,.72,smoothstep(.02,.96,uv.x))*(.86+h*.14);
+        vec3 col=mix(dark,steel,presence);
+        col=mix(col,dark,smoothstep(.82,1.,abs(uv.y-.5)*2.)*.28);
+        if(uLight>.5)col=mix(vec3(.957,.957,.941),vec3(.31,.35,.4)+steel*.18,presence*.58);
         gl_FragColor=vec4(col,1.);
       }`,function(gl,u,dt){
         var k=1.-Math.exp(-dt*3.4),oldx=pointer.x,oldy=pointer.y;

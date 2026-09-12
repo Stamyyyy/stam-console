@@ -134,10 +134,7 @@
     var loader = document.getElementById("loader");
     if (!loader) { startHeroIntro(); return; }
 
-    var seen = false;
-    try { seen = sessionStorage.getItem("stam-intro-seen") === "1"; } catch (e) {}
-
-    if (reduceMotion || seen) {
+    if (reduceMotion) {
       loader.classList.add("is-hidden");
       loader.style.display = "none";
       startHeroIntro();
@@ -150,17 +147,17 @@
       done = true;
       cancelBootLog();
       loader.classList.add("is-hidden");
-      try { sessionStorage.setItem("stam-intro-seen", "1"); } catch (e) {}
       setTimeout(function () { loader.style.display = "none"; }, 700);
       startHeroIntro();
     }
 
     // A short signature animation, not a simulated loading process.
-    setTimeout(finish, 3200);
-
-    loader.addEventListener("click", finish);
-    window.addEventListener("keydown", finish, { once: true });
-    setTimeout(finish, 4200);
+    var introTimer = setTimeout(finish, 3400);
+    var skip = document.getElementById("intro-skip");
+    if (skip) skip.addEventListener("click", function () { clearTimeout(introTimer); finish(); });
+    window.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") { clearTimeout(introTimer); finish(); }
+    }, { once: true });
   })();
 
   var revealEls = document.querySelectorAll(".reveal");
